@@ -1,4 +1,5 @@
 .env
+LAB_ACCESS.local.md
 backups/
 .private/
 *.log

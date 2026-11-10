@@ -5,8 +5,11 @@ HostKey /etc/gitlab/ssh_host_ecdsa_key
 HostKey /etc/gitlab/ssh_host_ed25519_key
 PermitRootLogin no
 PasswordAuthentication no
-AuthorizedKeysFile %h/.ssh/authorized_keys
-UsePAM yes
+AuthorizedKeysFile %h/.ssh/authorized_keys /gitlab-data/ssh/authorized_keys
+AuthorizedKeysCommand /opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k
+AuthorizedKeysCommandUser git
+UsePAM no
 Subsystem sftp internal-sftp
 AllowUsers git
 UseDNS no
+AcceptEnv GIT_PROTOCOL

@@ -45,11 +45,11 @@ services:
     restart: unless-stopped
     command:
     - server
-    - -config=/vault/config/vn.hcl
     cap_add:
     - IPC_LOCK
     environment:
       VAULT_ADDR: http://${HOST_IP}:18200
+      VAULT_API_ADDR: http://${HOST_IP}:18200
     volumes:
     - vault-vn:/vault/file
     - ./vault/vn.hcl:/vault/config/vn.hcl:ro,Z
@@ -98,11 +98,11 @@ services:
     restart: unless-stopped
     command:
     - server
-    - -config=/vault/config/indo.hcl
     cap_add:
     - IPC_LOCK
     environment:
       VAULT_ADDR: http://${HOST_IP}:28200
+      VAULT_API_ADDR: http://${HOST_IP}:28200
     volumes:
     - vault-indo:/vault/file
     - ./vault/indo.hcl:/vault/config/indo.hcl:ro,Z
@@ -119,6 +119,7 @@ services:
       NIFI_WEB_HTTPS_PORT: '18443'
       NIFI_WEB_PROXY_HOST: ${HOST_IP}:18443
       NIFI_REMOTE_INPUT_SOCKET_PORT: '18000'
+      NIFI_MANAGEMENT_PORT: '52020'
       NIFI_CLUSTER_IS_NODE: 'false'
       SINGLE_USER_CREDENTIALS_USERNAME: admin
       SINGLE_USER_CREDENTIALS_PASSWORD: ${NIFI_PASSWORD}
@@ -145,6 +146,7 @@ services:
       NIFI_WEB_HTTPS_PORT: '28443'
       NIFI_WEB_PROXY_HOST: ${HOST_IP}:28443
       NIFI_REMOTE_INPUT_SOCKET_PORT: '28000'
+      NIFI_MANAGEMENT_PORT: '52021'
       NIFI_CLUSTER_IS_NODE: 'false'
       SINGLE_USER_CREDENTIALS_USERNAME: admin
       SINGLE_USER_CREDENTIALS_PASSWORD: ${NIFI_PASSWORD}
@@ -171,6 +173,7 @@ services:
       NIFI_WEB_HTTPS_PORT: '38443'
       NIFI_WEB_PROXY_HOST: ${HOST_IP}:38443
       NIFI_REMOTE_INPUT_SOCKET_PORT: '38000'
+      NIFI_MANAGEMENT_PORT: '52022'
       NIFI_CLUSTER_IS_NODE: 'false'
       SINGLE_USER_CREDENTIALS_USERNAME: admin
       SINGLE_USER_CREDENTIALS_PASSWORD: ${NIFI_PASSWORD}
@@ -191,26 +194,21 @@ services:
     shm_size: 256m
     environment:
       GITLAB_ROOT_PASSWORD: ${GITLAB_PASSWORD}
-      GITLAB_OMNIBUS_CONFIG: 'external_url ''http://${HOST_IP}:18080''
-
-        nginx[''listen_addresses''] = [''0.0.0.0'']
-
-        nginx[''listen_port''] = 18080
-
-        gitlab_rails[''gitlab_shell_ssh_port''] = 18022
-
-        letsencrypt[''enable''] = false
-
-        prometheus_monitoring[''enable''] = false
-
-        puma[''worker_processes''] = 2
-
-        sidekiq[''concurrency''] = 5'
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://${HOST_IP}:18080'
+        nginx['listen_addresses'] = ['0.0.0.0']
+        nginx['listen_port'] = 18080
+        nginx['status']['enable'] = false
+        gitlab_rails['gitlab_shell_ssh_port'] = 18022
+        letsencrypt['enable'] = false
+        prometheus_monitoring['enable'] = false
+        puma['worker_processes'] = 2
+        sidekiq['concurrency'] = 5
     volumes:
     - gitlab-config:/etc/gitlab
     - gitlab-logs:/var/log/gitlab
     - gitlab-data:/var/opt/gitlab
-    - ./gitlab/sshd_config:/etc/ssh/sshd_config:ro,Z
+    - ./gitlab/sshd_config:/assets/sshd_config:ro,Z
 volumes:
   kafka-vn: {}
   postgres-vn: {}

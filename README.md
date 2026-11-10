@@ -4,6 +4,11 @@ Bộ lab thực hành Data 360: xây dựng flow Kafka → Postgres tại stagin
 
 **Bắt đầu ở [docs/GUIDE_VI.md](docs/GUIDE_VI.md).** Tài liệu có đầy đủ thứ tự chạy, cấu hình UI, kiểm tra kết quả, phát hành lần hai, rollback và xử lý lỗi.
 
+Máy lab `192.168.102.4`: xem [thông tin truy cập và điểm bắt đầu thực hành](docs/DEPLOYMENT_LAB.md).
+
+Truy cập nhanh trong workspace: [LAB_ACCESS.local.md](LAB_ACCESS.local.md) tổng hợp URL,
+username, password và token thực tế. File này được giữ local và bỏ qua bởi Git.
+
 ## Phạm vi thiết kế
 
 - 2 Kafka độc lập, mỗi Kafka 1 broker KRaft; 2 Postgres độc lập; 2 Vault persistent độc lập.
@@ -19,7 +24,7 @@ Bộ lab thực hành Data 360: xây dựng flow Kafka → Postgres tại stagin
 | Dịch vụ | User | Password/token |
 |---|---|---|
 | NiFi | admin | adminadmin123 |
-| GitLab | root | adminadmin123 |
+| GitLab | root | NifiLab_2026@Ready9 |
 | PostgreSQL | admin | admin |
 | Vault đọc từ NiFi VN | Token | nifi-vn-lab-token |
 | Vault đọc từ NiFi INDO | Token | nifi-indo-lab-token |
@@ -33,10 +38,12 @@ NiFi cần password tối thiểu 12 ký tự, nên không dùng `admin/admin`. 
 | File | Chức năng |
 |---|---|
 | compose.yaml, .env.example | Toàn bộ hạ tầng và cấu hình host |
-| nifi/Dockerfile | NiFi + PostgreSQL JDBC driver |
+| nifi/Dockerfile, nifi/start-lab.sh | NiFi + JDBC driver, cổng management riêng cho host network |
+| compose.lab.yaml | Profile giảm RAM cho máy lab dùng chung |
 | scripts/preflight.sh | Kiểm tra IP/cổng/cấu hình |
 | scripts/init-topics.sh | Tạo topics |
 | scripts/init-vault.py | Init/unseal persistent Vault, seed secret nếu chưa có |
+| scripts/check-infra.py | Kiểm tra readiness hạ tầng sau seed/sync parameter |
 | scripts/produce.sh, query.sh | Gửi dữ liệu và kiểm tra DB |
 | scripts/release-sha.py | Liệt kê SHA của snapshot trên main |
 | scripts/backup.sh | Backup offline tất cả named volumes và thông tin phục hồi |

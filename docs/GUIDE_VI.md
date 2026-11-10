@@ -66,6 +66,11 @@ bash scripts/preflight.sh
 
 `.env` dùng cú pháp KEY=value đơn giản, không dấu nháy, không space quanh `=`. Các script Python đọc trực tiếp định dạng này. Không dùng IP public, 127.0.0.1 hay 0.0.0.0 làm HOST_IP.
 
+Máy lab dùng chung với dịch vụ khác có thể bật profile giảm RAM bằng cách thêm
+`COMPOSE_FILE=compose.yaml:compose.lab.yaml` vào `.env`. Profile đặt heap NiFi
+256 MB–1 GB mỗi instance và GitLab Puma chạy một process. Đây là cấu hình cho
+bài thực hành nhỏ; theo dõi `free -h` và `docker stats --no-stream` khi tăng tải.
+
 ### Cổng
 
 | Dịch vụ | Endpoint trên host |
@@ -80,6 +85,7 @@ bash scripts/preflight.sh
 | PostgreSQL VN / INDO | HOST_IP:15432 / 25432 |
 | Vault VN / INDO UI/API | http://HOST_IP:18200/ui / http://HOST_IP:28200/ui |
 | NiFi Site-to-Site reserved | 18000 / 28000 / 38000 |
+| NiFi management nội bộ staging / VN / INDO | 127.0.0.1:52020 / 52021 / 52022 |
 
 Compose dùng `network_mode: host`, vì vậy **không có `ports:`**: service bind trực tiếp lên host, không qua NAT/publish. Listener ứng dụng đặt 0.0.0.0; địa chỉ client và Kafka advertised listener phải là IP LAN. Host mode ở đây chỉ dành cho Linux, không dùng nguyên cấu hình cho Docker Desktop.
 
@@ -109,7 +115,7 @@ set -a
 source .env
 set +a
 curl -k "https://$HOST_IP:18443/nifi/"
-curl "http://$HOST_IP:18080/-/readiness"
+curl "http://127.0.0.1:18080/-/readiness?all=1"
 bash scripts/init-topics.sh
 python3 scripts/init-vault.py
 bash scripts/query.sh stag
@@ -119,12 +125,13 @@ bash scripts/query.sh indo
 
 - Nếu init-topics connection refused, chờ Kafka sẵn sàng rồi chạy lại; script tạo topic idempotent.
 - SQL init chạy khi volume Postgres rỗng lần đầu. Kết quả query là bảng rỗng, không phải “relation does not exist”.
+- GitLab giới hạn endpoint readiness ở loopback theo mặc định; chạy lệnh trên tại máy Docker host. Trang đăng nhập vẫn truy cập từ LAN qua `http://HOST_IP:18080/users/sign_in`.
 - Vault chạy server persistent, không dev mode; secret không mất khi restart. Sau restart Vault bị sealed: chạy lại `init-vault.py` để unseal. Script không overwrite secret đã có.
 - Root token/unseal key trong `.private/vault-*-init.json`; bảo quản cùng backup. Có thể lấy root token để đăng nhập UI bằng `python3 -c 'import json; print(json.load(open(".private/vault-vn-init.json"))["root_token"])'`. Không paste token này vào GitLab.
 
 ## 4. Tạo GitLab project và quyền
 
-1. Mở http://HOST_IP:18080, đăng nhập `root / adminadmin123`.
+1. Mở http://HOST_IP:18080, đăng nhập `root / NifiLab_2026@Ready9` (hoặc `GITLAB_PASSWORD` đã đặt trong `.env`). GitLab từ chối mật khẩu phổ biến `adminadmin123` ngay lúc tạo tài khoản ban đầu.
 2. Tạo group `data360` (private), tạo project `flows-nifi` (private), chọn Initialize with README, default branch `main`. Nếu dùng repo có sẵn, giữ nội dung hiện có và thay namespace trong các bước sau cho đúng.
 3. Trong main, tạo file `flows/shared/.keep` qua Repository → New file. Git không giữ thư mục rỗng; file này làm bucket `shared` nhìn thấy được.
 4. Tạo branch `staging` từ main. Cả hai branch phải có `flows/shared/.keep`.
@@ -165,6 +172,16 @@ python3 scripts/sync-params.py indo
 Script đọc KV qua **host LAN**, đăng nhập NiFi, tạo/update `shared-runtime`, đặt riêng `db.password` Sensitive, chờ update request hoàn tất. Không ghi snapshot, không gọi GitLab. Đây là bước apply riêng; không polling secret theo từng record. Khi chạy lại cho context đang dùng, **stop shared PG trước**, kiểm tra diff parameter rồi mới start lại.
 
 Vào menu NiFi → Parameter Contexts → `shared-runtime`, xác nhận đủ 8 parameter. Không in password ra log. Mỗi lần thay secret trong Vault, chạy script tương ứng để apply. Việc thay password DB thực tế và thay secret Vault là hai thao tác cần phối hợp; đổi Vault không tự đổi password PostgreSQL.
+
+Sau khi hoàn tất seed và sync cả ba instance, kiểm tra hạ tầng trên máy Docker:
+
+```bash
+python3 scripts/check-infra.py
+```
+
+Script kiểm tra 10 container, Kafka topics, bảng DB, Vault unseal, đăng nhập NiFi,
+parameter không sensitive so với Vault, metadata sensitive của password, JDBC JAR
+và GitLab readiness. Đây chưa phải kiểm tra luồng Kafka → NiFi → PostgreSQL.
 
 Lý do dùng bridge nhỏ này làm mặc định: context portable không mang association đến Parameter Provider riêng của môi trường. Nhờ đó snapshot chỉ chứa định nghĩa parameter và không cần giải quyết provider metadata khi import. Nếu muốn học provider native, xem mục 13; không trộn hai cơ chế cùng quản lý một context.
 
@@ -420,9 +437,11 @@ Lab mặc định dùng bridge ở mục 5 để giữ snapshot không có provi
 | NiFi dùng credential ngẫu nhiên | Password dưới 12 ký tự; xem startup log và đặt lại NIFI_PASSWORD |
 | NiFi UI HTTP 400/Host header | URL IP:port đúng với NIFI_WEB_PROXY_HOST; không dùng service hostname |
 | Một NiFi không start, Address already in use | Kiểm tra HTTPS/Site-to-Site ports bằng ss; host mode dùng chung port namespace |
+| NiFi bật UI rồi tắt, Management Server start failed | Rebuild image và dùng `NIFI_MANAGEMENT_PORT` riêng cho từng instance; wrapper ghi `management.server.address` vào bootstrap.conf, tránh race khi tự chọn cổng |
 | Kafka bootstrap được nhưng consume fail | advertised.listeners phải HOST_IP:19092 hoặc 29092; kiểm tra firewall và metadata |
 | Kafka data permission denied | Kiểm tra UID image và quyền named volume; không chmod 777 cả host; đọc logs để sửa đúng volume |
 | Vault 503 / sealed | Chạy init-vault.py với đúng .private; không init lại volume đã có |
+| Vault báo address already in use nhưng cổng host đang trống | Image tự thêm `-config=/vault/config`; chỉ dùng command `server`, không truyền lại file trong thư mục này vì listener sẽ được đọc hai lần |
 | Vault 403 sau thời gian dài | Token hết TTL; init-vault.py tạo lại token lab nếu token cũ không còn hợp lệ; kiểm tra policy |
 | GitLab 401/403 | PAT scope api/read_api, role Developer/Reporter, token hết hạn, protected branch |
 | Không thấy bucket shared | flows/shared/.keep tồn tại đúng branch; Repository Path=flows |
@@ -435,6 +454,8 @@ Lab mặc định dùng bridge ở mục 5 để giữ snapshot không có provi
 | Error queue tăng | Inspect content + putdatabaserecord.error; sửa nguyên nhân rồi replay, không terminate lỗi |
 | Local PG xuất hiện trong snapshot | Đã version parent hoặc đặt local PG dưới shared; sửa ranh giới, review version mới |
 | GitLab chậm/502 | Chờ readiness, xem logs gitlab và RAM; tăng tài nguyên |
+| GitLab Nginx không lên, bind cổng 8060 lỗi | Nginx status mặc định trùng dịch vụ khác; Compose tắt `nginx['status']['enable']` vì lab không dùng metrics này |
+| GitLab SSH vẫn cố bind 22 | Image chạy sshd với `/assets/sshd_config`; kiểm tra bind mount đúng đường dẫn này và cổng trong file là 18022 |
 
 ## 15. Nguồn kỹ thuật
 

@@ -1,0 +1,27 @@
+# Optional profile for the shared 21 GiB RHEL lab host.
+# Activate with COMPOSE_FILE=compose.yaml:compose.lab.yaml in .env.
+services:
+  nifi-stag:
+    environment:
+      NIFI_JVM_HEAP_INIT: 256m
+      NIFI_JVM_HEAP_MAX: 1g
+  nifi-vn:
+    environment:
+      NIFI_JVM_HEAP_INIT: 256m
+      NIFI_JVM_HEAP_MAX: 1g
+  nifi-indo:
+    environment:
+      NIFI_JVM_HEAP_INIT: 256m
+      NIFI_JVM_HEAP_MAX: 1g
+  gitlab:
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://${HOST_IP}:18080'
+        nginx['listen_addresses'] = ['0.0.0.0']
+        nginx['listen_port'] = 18080
+        nginx['status']['enable'] = false
+        gitlab_rails['gitlab_shell_ssh_port'] = 18022
+        letsencrypt['enable'] = false
+        prometheus_monitoring['enable'] = false
+        puma['worker_processes'] = 0
+        sidekiq['concurrency'] = 5

@@ -1,10 +1,36 @@
 # Phạm vi kiểm tra
 
-Bộ lab được tạo ngày 2026-11-10. Đây là project để triển khai trên máy RHEL của người dùng; **chưa được chạy end-to-end trên RHEL/Docker** trong môi trường soạn thảo này vì không có Docker executable/daemon.
+Bộ lab được tạo và bắt đầu triển khai trên máy RHEL ngày 2026-11-10.
+Hạ tầng đã được kiểm tra trực tiếp theo phạm vi dưới đây; luồng thực hành
+Kafka → NiFi → PostgreSQL chưa được dựng và chạy end-to-end.
 
-Đã kiểm tra:
+## Kiểm tra trực tiếp trên máy lab
 
-- Docker Registry xác nhận HTTP 200 cho cả 5 image tag trong .env.example (chỉ xác nhận manifest tồn tại, chưa pull/run).
+- Host RHEL 9.8 tại `192.168.102.4`, Docker Compose 5.5.1; đã pull các image được pin và build image NiFi kèm PostgreSQL JDBC driver.
+- Kafka VN có `trips`, `trips-staging`; Kafka INDO có `trips`. Mỗi topic có 3 partition, replication factor 1 và có leader.
+- Cả hai PostgreSQL đã có bảng `market.trip_events` và `staging.trip_events`; các bảng đang rỗng để bắt đầu bài lab.
+- Cả hai Vault đã initialized/unsealed, seed KV riêng từng môi trường; file root token/unseal key nằm trong `.private/` với quyền `0600`.
+- Cả ba NiFi đã đăng nhập bằng tài khoản admin, có context `shared-runtime` gồm 8 parameter và có JDBC JAR. Đã đối chiếu các giá trị không sensitive với Vault và kiểm tra `db.password` được đánh dấu Sensitive; API không trả lại giá trị password để đối chiếu.
+- UI của cả ba NiFi trả HTTP 200 khi truy cập từ máy Mac qua LAN.
+- Wrapper khởi động đặt cổng management riêng: staging `127.0.0.1:52020`, VN `127.0.0.1:52021`, INDO `127.0.0.1:52022`. Sau rebuild/recreate, số lần restart của cả ba container bằng 0 tại thời điểm kiểm tra.
+
+- GitLab đã đăng nhập bằng root từ máy Mac qua LAN và gọi API xác nhận `username=root`, `is_admin=true`. Readiness qua loopback kiểm tra database, Redis, queues và Gitaly đạt `status=ok`.
+- Đã hoàn tất production seed sau lỗi mật khẩu ban đầu: root active và có 9 work item types. Mật khẩu GitLab mặc định trong tài liệu đã đổi vì `adminadmin123` bị validation của image từ chối.
+- Mount SSH GitLab dùng `/assets/sshd_config`; Nginx status mặc định cổng 8060 được tắt để tránh trùng với Doris trên host.
+- Lượt kiểm tra cuối lúc khoảng 20:49 ngày 2026-11-10 (UTC+7), sau recreate GitLab với cấu hình cuối: `python3 scripts/check-infra.py` đạt toàn bộ kiểm tra, gồm 10 container, PostgreSQL qua LAN/password, các context NiFi còn nguyên, GitLab readiness và SSH banner trên cổng 18022.
+
+Chạy lại trên máy lab:
+
+```bash
+cd ~/github/nifi-multi-market-lab
+python3 scripts/check-infra.py
+```
+
+Thông tin truy cập và điểm bắt đầu bài thực hành ở [DEPLOYMENT_LAB.md](DEPLOYMENT_LAB.md).
+
+## Kiểm tra tĩnh và mock khi soạn bộ lab
+
+- Docker Registry xác nhận HTTP 200 cho cả 5 image tag trong .env.example; đây là kiểm tra manifest trước khi triển khai trực tiếp.
 - YAML parse thành công; đủ 10 services: 3 NiFi, 2 Kafka, 2 PostgreSQL, 2 Vault, 1 GitLab.
 - Toàn bộ services dùng host network; không có Docker service hostname trong kết nối được hướng dẫn; các cổng chính được phân tách.
 - Syntax của tất cả Python và Bash scripts.
@@ -19,6 +45,12 @@ Chạy lại kiểm tra HTTP mock:
 python3 tests/test_scripts.py
 ```
 
-**Mock chỉ kiểm tra logic script, không chứng minh integration thật.** Chưa xác nhận image pull/build tại host người dùng, startup của toàn stack, import/change-version trên UI, round-trip Kafka → NiFi → Postgres, firewall/SELinux tại host hay backup restore thực tế. Các bước đó có acceptance cases trong CASES.md.
+## Phần chưa kiểm chứng
+
+**Mock chỉ kiểm tra logic script, không chứng minh integration thật.** Chưa xác nhận
+GitLab SSH key authentication/clone, import/change-version trên UI, round-trip Kafka → NiFi →
+PostgreSQL, rollout/rollback hay backup restore thực tế. Chưa kiểm tra chính sách
+firewall/SELinux ở chế độ enforcing. Các bước thực hành có acceptance cases trong
+CASES.md.
 
 Trước sử dụng ngoài lab cần có test integration, đối chiếu phiên bản, image security updates, authentication/TLS và thiết kế HA riêng. Bản này dùng single-node để tập trung vào flow promotion.
