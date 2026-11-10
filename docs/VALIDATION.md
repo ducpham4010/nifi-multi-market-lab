@@ -28,6 +28,22 @@ python3 scripts/check-infra.py
 
 Thông tin truy cập và điểm bắt đầu bài thực hành ở [DEPLOYMENT_LAB.md](DEPLOYMENT_LAB.md).
 
+## Bổ sung: phiên đăng nhập NiFi và guide UI
+
+- Tái hiện trên lab: dùng cùng cookie jar đăng nhập staging qua IP trả 200; đăng nhập VN qua cùng IP rồi gọi lại staging trả 401. JWT cả hai đều có `exp - iat = 28800` giây, nên lỗi này là ghi đè cookie theo host/path.
+- Đã cấu hình hostname riêng, allowlist proxy và certificate SAN cho staging/VN/INDO; vẫn dùng HTTPS và Single User authentication.
+- `check-nifi-sessions.py` chạy từ máy Mac qua LAN: ba phiên cookie cùng tồn tại, đăng nhập lại staging không làm VN/INDO mất phiên; kiểm tra thời hạn token 8 giờ, không chờ thực tế 8 giờ để đo expiration.
+- Snapshot API trước/sau rollout: giữ nguyên ID Process Group, processor state, connections và Parameter Context của ba instance. Tại thời điểm kiểm tra canvas chỉ có root, chưa có processor; kiểm tra này không chứng minh bảo toàn một flow đang xử lý dữ liệu.
+- Test thực tế keytool/OpenSSL trong image NiFi: tạo PKCS12 lần đầu, chạy lại không đổi file, đổi hostname giữ password/trust anchor khác; `tests/test_browser_tls.py` đạt.
+- Guide được mở rộng thành từng thao tác và đối chiếu source giao diện đúng tag `rel/nifi-2.6.0`, gồm menu Controller Services, Save Flow Version, Commit Local Changes, Import from Registry và Change Version. Browser runtime không có browser khả dụng; chưa chạy toàn bộ chuỗi click trên UI, chưa có screenshot xác nhận từng bước.
+
+Chạy lại test TLS trong image:
+
+```bash
+docker compose exec -T -e NIFI_TLS_CONFIG_SCRIPT=/opt/nifi/scripts/configure-browser-tls.py \
+  nifi-stag python3 - < tests/test_browser_tls.py
+```
+
 ## Kiểm tra tĩnh và mock khi soạn bộ lab
 
 - Docker Registry xác nhận HTTP 200 cho cả 5 image tag trong .env.example; đây là kiểm tra manifest trước khi triển khai trực tiếp.

@@ -8,14 +8,18 @@ Compose project: `nifi-market-lab`.
 
 | Dịch vụ | URL | Tài khoản |
 |---|---|---|
-| NiFi staging | https://192.168.102.4:18443/nifi/ | `admin / adminadmin123` |
-| NiFi VN | https://192.168.102.4:28443/nifi/ | `admin / adminadmin123` |
-| NiFi INDO | https://192.168.102.4:38443/nifi/ | `admin / adminadmin123` |
+| NiFi staging | https://nifi-stag.192.168.102.4.sslip.io:18443/nifi/ | `admin / adminadmin123` |
+| NiFi VN | https://nifi-vn.192.168.102.4.sslip.io:28443/nifi/ | `admin / adminadmin123` |
+| NiFi INDO | https://nifi-indo.192.168.102.4.sslip.io:38443/nifi/ | `admin / adminadmin123` |
 | GitLab | http://192.168.102.4:18080 | `root / NifiLab_2026@Ready9` |
 | Vault VN | http://192.168.102.4:18200/ui/ | Read token: `nifi-vn-lab-token` |
 | Vault INDO | http://192.168.102.4:28200/ui/ | Read token: `nifi-indo-lab-token` |
 
 NiFi dùng certificate tự ký; chấp nhận certificate của máy lab khi mở lần đầu.
+Mỗi NiFi dùng hostname riêng để cookie không bị ghi đè khi đăng nhập nhiều tab.
+Single User cấp JWT 8 giờ. Đóng tab IP cũ và dùng URL mới; mục 0 của guide có
+dòng hosts dự phòng nếu DNS sslip.io bị chặn. Certificate SAN được chuẩn bị tự động
+bởi wrapper khi container start, có cả hostname riêng và IP LAN.
 Vault read token chỉ đọc/list KV; thao tác quản trị dùng root token trong
 `.private/vault-vn-init.json` hoặc `.private/vault-indo-init.json` trên máy lab.
 
@@ -54,6 +58,7 @@ Chạy trên máy lab:
 cd ~/github/nifi-multi-market-lab
 docker compose ps
 python3 scripts/check-infra.py
+python3 scripts/check-nifi-sessions.py
 ```
 
 Các container dùng `restart: unless-stopped`. Sau khi Vault restart hoặc host reboot,

@@ -6,5 +6,6 @@ RUN mkdir -p /opt/nifi/drivers && \
       -o /opt/nifi/drivers/postgresql.jar && \
     chmod 644 /opt/nifi/drivers/postgresql.jar
 COPY --chmod=755 start-lab.sh /opt/nifi/scripts/start-lab.sh
+COPY --chmod=644 configure-browser-tls.py /opt/nifi/scripts/configure-browser-tls.py
 USER nifi
 ENTRYPOINT ["/opt/nifi/scripts/start-lab.sh"]

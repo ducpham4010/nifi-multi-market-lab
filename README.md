@@ -9,6 +9,9 @@ Máy lab `192.168.102.4`: xem [thông tin truy cập và điểm bắt đầu th
 Truy cập nhanh trong workspace: [LAB_ACCESS.local.md](LAB_ACCESS.local.md) tổng hợp URL,
 username, password và token thực tế. File này được giữ local và bỏ qua bởi Git.
 
+Mở ba NiFi bằng hostname riêng trong file truy cập hoặc [mục 0 của guide](docs/GUIDE_VI.md#0-mở-đúng-ứng-dụng-và-chọn-điểm-bắt-đầu).
+Ba tab cùng IP khác cổng sẽ ghi đè cookie đăng nhập của nhau; phiên Single User của NiFi 2.6 có thời hạn 8 giờ.
+
 ## Phạm vi thiết kế
 
 - 2 Kafka độc lập, mỗi Kafka 1 broker KRaft; 2 Postgres độc lập; 2 Vault persistent độc lập.
@@ -39,11 +42,13 @@ NiFi cần password tối thiểu 12 ký tự, nên không dùng `admin/admin`. 
 |---|---|
 | compose.yaml, .env.example | Toàn bộ hạ tầng và cấu hình host |
 | nifi/Dockerfile, nifi/start-lab.sh | NiFi + JDBC driver, cổng management riêng cho host network |
+| nifi/configure-browser-tls.py | Certificate tự ký có SAN cho hostname NiFi riêng; giữ store passwords và trust anchors khác |
 | compose.lab.yaml | Profile giảm RAM cho máy lab dùng chung |
 | scripts/preflight.sh | Kiểm tra IP/cổng/cấu hình |
 | scripts/init-topics.sh | Tạo topics |
 | scripts/init-vault.py | Init/unseal persistent Vault, seed secret nếu chưa có |
 | scripts/check-infra.py | Kiểm tra readiness hạ tầng sau seed/sync parameter |
+| scripts/check-nifi-sessions.py | Kiểm tra ba phiên cookie cùng tồn tại và thời hạn JWT |
 | scripts/produce.sh, query.sh | Gửi dữ liệu và kiểm tra DB |
 | scripts/release-sha.py | Liệt kê SHA của snapshot trên main |
 | scripts/backup.sh | Backup offline tất cả named volumes và thông tin phục hồi |

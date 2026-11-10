@@ -117,7 +117,8 @@ services:
     environment:
       NIFI_WEB_HTTPS_HOST: 0.0.0.0
       NIFI_WEB_HTTPS_PORT: '18443'
-      NIFI_WEB_PROXY_HOST: ${HOST_IP}:18443
+      NIFI_WEB_PROXY_HOST: ${HOST_IP}:18443,${NIFI_STAG_HOST:-nifi-stag.${HOST_IP}.sslip.io}:18443
+      NIFI_BROWSER_HOST: ${NIFI_STAG_HOST:-nifi-stag.${HOST_IP}.sslip.io}
       NIFI_REMOTE_INPUT_SOCKET_PORT: '18000'
       NIFI_MANAGEMENT_PORT: '52020'
       NIFI_CLUSTER_IS_NODE: 'false'
@@ -144,7 +145,8 @@ services:
     environment:
       NIFI_WEB_HTTPS_HOST: 0.0.0.0
       NIFI_WEB_HTTPS_PORT: '28443'
-      NIFI_WEB_PROXY_HOST: ${HOST_IP}:28443
+      NIFI_WEB_PROXY_HOST: ${HOST_IP}:28443,${NIFI_VN_HOST:-nifi-vn.${HOST_IP}.sslip.io}:28443
+      NIFI_BROWSER_HOST: ${NIFI_VN_HOST:-nifi-vn.${HOST_IP}.sslip.io}
       NIFI_REMOTE_INPUT_SOCKET_PORT: '28000'
       NIFI_MANAGEMENT_PORT: '52021'
       NIFI_CLUSTER_IS_NODE: 'false'
@@ -171,7 +173,8 @@ services:
     environment:
       NIFI_WEB_HTTPS_HOST: 0.0.0.0
       NIFI_WEB_HTTPS_PORT: '38443'
-      NIFI_WEB_PROXY_HOST: ${HOST_IP}:38443
+      NIFI_WEB_PROXY_HOST: ${HOST_IP}:38443,${NIFI_INDO_HOST:-nifi-indo.${HOST_IP}.sslip.io}:38443
+      NIFI_BROWSER_HOST: ${NIFI_INDO_HOST:-nifi-indo.${HOST_IP}.sslip.io}
       NIFI_REMOTE_INPUT_SOCKET_PORT: '38000'
       NIFI_MANAGEMENT_PORT: '52022'
       NIFI_CLUSTER_IS_NODE: 'false'

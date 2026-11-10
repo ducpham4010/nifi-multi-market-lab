@@ -14,4 +14,5 @@ fi
 bootstrap="${NIFI_HOME:-/opt/nifi/nifi-current}/conf/bootstrap.conf"
 sed -i '/^management\.server\.address=/d' "$bootstrap"
 printf '\nmanagement.server.address=http://127.0.0.1:%s\n' "$port" >> "$bootstrap"
+python3 /opt/nifi/scripts/configure-browser-tls.py
 exec /opt/nifi/scripts/start.sh
