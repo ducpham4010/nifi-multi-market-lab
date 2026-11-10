@@ -1,0 +1,241 @@
+name: nifi-market-lab
+services:
+  kafka-vn:
+    image: ${KAFKA_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: '1'
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:19092,CONTROLLER://0.0.0.0:19093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${HOST_IP}:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@${HOST_IP}:19093
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: '0'
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_HEAP_OPTS: -Xms512m -Xmx512m
+    volumes:
+    - kafka-vn:/var/lib/kafka/data
+  postgres-vn:
+    image: ${POSTGRES_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: market
+    command:
+    - postgres
+    - -c
+    - port=15432
+    - -c
+    - listen_addresses=*
+    volumes:
+    - postgres-vn:/var/lib/postgresql/data
+    - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro,Z
+  vault-vn:
+    image: ${VAULT_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    command:
+    - server
+    - -config=/vault/config/vn.hcl
+    cap_add:
+    - IPC_LOCK
+    environment:
+      VAULT_ADDR: http://${HOST_IP}:18200
+    volumes:
+    - vault-vn:/vault/file
+    - ./vault/vn.hcl:/vault/config/vn.hcl:ro,Z
+  kafka-indo:
+    image: ${KAFKA_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: '2'
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${HOST_IP}:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 2@${HOST_IP}:29093
+      CLUSTER_ID: QkU3OEVBNTcwNTJENDM2Qk
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: '0'
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_HEAP_OPTS: -Xms512m -Xmx512m
+    volumes:
+    - kafka-indo:/var/lib/kafka/data
+  postgres-indo:
+    image: ${POSTGRES_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: market
+    command:
+    - postgres
+    - -c
+    - port=25432
+    - -c
+    - listen_addresses=*
+    volumes:
+    - postgres-indo:/var/lib/postgresql/data
+    - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro,Z
+  vault-indo:
+    image: ${VAULT_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    command:
+    - server
+    - -config=/vault/config/indo.hcl
+    cap_add:
+    - IPC_LOCK
+    environment:
+      VAULT_ADDR: http://${HOST_IP}:28200
+    volumes:
+    - vault-indo:/vault/file
+    - ./vault/indo.hcl:/vault/config/indo.hcl:ro,Z
+  nifi-stag:
+    image: nifi-market-lab:2.6.0
+    build:
+      context: ./nifi
+      args:
+        NIFI_IMAGE: ${NIFI_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      NIFI_WEB_HTTPS_HOST: 0.0.0.0
+      NIFI_WEB_HTTPS_PORT: '18443'
+      NIFI_WEB_PROXY_HOST: ${HOST_IP}:18443
+      NIFI_REMOTE_INPUT_SOCKET_PORT: '18000'
+      NIFI_CLUSTER_IS_NODE: 'false'
+      SINGLE_USER_CREDENTIALS_USERNAME: admin
+      SINGLE_USER_CREDENTIALS_PASSWORD: ${NIFI_PASSWORD}
+      NIFI_SENSITIVE_PROPS_KEY: lab-sensitive-key-123456
+      NIFI_JVM_HEAP_INIT: 512m
+      NIFI_JVM_HEAP_MAX: 2g
+    volumes:
+    - nifi-stag-conf:/opt/nifi/nifi-current/conf
+    - nifi-stag-state:/opt/nifi/nifi-current/state
+    - nifi-stag-db:/opt/nifi/nifi-current/database_repository
+    - nifi-stag-ff:/opt/nifi/nifi-current/flowfile_repository
+    - nifi-stag-content:/opt/nifi/nifi-current/content_repository
+    - nifi-stag-provenance:/opt/nifi/nifi-current/provenance_repository
+  nifi-vn:
+    image: nifi-market-lab:2.6.0
+    build:
+      context: ./nifi
+      args:
+        NIFI_IMAGE: ${NIFI_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      NIFI_WEB_HTTPS_HOST: 0.0.0.0
+      NIFI_WEB_HTTPS_PORT: '28443'
+      NIFI_WEB_PROXY_HOST: ${HOST_IP}:28443
+      NIFI_REMOTE_INPUT_SOCKET_PORT: '28000'
+      NIFI_CLUSTER_IS_NODE: 'false'
+      SINGLE_USER_CREDENTIALS_USERNAME: admin
+      SINGLE_USER_CREDENTIALS_PASSWORD: ${NIFI_PASSWORD}
+      NIFI_SENSITIVE_PROPS_KEY: lab-sensitive-key-123456
+      NIFI_JVM_HEAP_INIT: 512m
+      NIFI_JVM_HEAP_MAX: 2g
+    volumes:
+    - nifi-vn-conf:/opt/nifi/nifi-current/conf
+    - nifi-vn-state:/opt/nifi/nifi-current/state
+    - nifi-vn-db:/opt/nifi/nifi-current/database_repository
+    - nifi-vn-ff:/opt/nifi/nifi-current/flowfile_repository
+    - nifi-vn-content:/opt/nifi/nifi-current/content_repository
+    - nifi-vn-provenance:/opt/nifi/nifi-current/provenance_repository
+  nifi-indo:
+    image: nifi-market-lab:2.6.0
+    build:
+      context: ./nifi
+      args:
+        NIFI_IMAGE: ${NIFI_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      NIFI_WEB_HTTPS_HOST: 0.0.0.0
+      NIFI_WEB_HTTPS_PORT: '38443'
+      NIFI_WEB_PROXY_HOST: ${HOST_IP}:38443
+      NIFI_REMOTE_INPUT_SOCKET_PORT: '38000'
+      NIFI_CLUSTER_IS_NODE: 'false'
+      SINGLE_USER_CREDENTIALS_USERNAME: admin
+      SINGLE_USER_CREDENTIALS_PASSWORD: ${NIFI_PASSWORD}
+      NIFI_SENSITIVE_PROPS_KEY: lab-sensitive-key-123456
+      NIFI_JVM_HEAP_INIT: 512m
+      NIFI_JVM_HEAP_MAX: 2g
+    volumes:
+    - nifi-indo-conf:/opt/nifi/nifi-current/conf
+    - nifi-indo-state:/opt/nifi/nifi-current/state
+    - nifi-indo-db:/opt/nifi/nifi-current/database_repository
+    - nifi-indo-ff:/opt/nifi/nifi-current/flowfile_repository
+    - nifi-indo-content:/opt/nifi/nifi-current/content_repository
+    - nifi-indo-provenance:/opt/nifi/nifi-current/provenance_repository
+  gitlab:
+    image: ${GITLAB_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    shm_size: 256m
+    environment:
+      GITLAB_ROOT_PASSWORD: ${GITLAB_PASSWORD}
+      GITLAB_OMNIBUS_CONFIG: 'external_url ''http://${HOST_IP}:18080''
+
+        nginx[''listen_addresses''] = [''0.0.0.0'']
+
+        nginx[''listen_port''] = 18080
+
+        gitlab_rails[''gitlab_shell_ssh_port''] = 18022
+
+        letsencrypt[''enable''] = false
+
+        prometheus_monitoring[''enable''] = false
+
+        puma[''worker_processes''] = 2
+
+        sidekiq[''concurrency''] = 5'
+    volumes:
+    - gitlab-config:/etc/gitlab
+    - gitlab-logs:/var/log/gitlab
+    - gitlab-data:/var/opt/gitlab
+    - ./gitlab/sshd_config:/etc/ssh/sshd_config:ro,Z
+volumes:
+  kafka-vn: {}
+  postgres-vn: {}
+  vault-vn: {}
+  kafka-indo: {}
+  postgres-indo: {}
+  vault-indo: {}
+  nifi-stag-conf: {}
+  nifi-stag-state: {}
+  nifi-stag-db: {}
+  nifi-stag-ff: {}
+  nifi-stag-content: {}
+  nifi-stag-provenance: {}
+  nifi-vn-conf: {}
+  nifi-vn-state: {}
+  nifi-vn-db: {}
+  nifi-vn-ff: {}
+  nifi-vn-content: {}
+  nifi-vn-provenance: {}
+  nifi-indo-conf: {}
+  nifi-indo-state: {}
+  nifi-indo-db: {}
+  nifi-indo-ff: {}
+  nifi-indo-content: {}
+  nifi-indo-provenance: {}
+  gitlab-config: {}
+  gitlab-logs: {}
+  gitlab-data: {}

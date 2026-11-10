@@ -1,0 +1,12 @@
+# OPTIONAL: needs an explicitly registered GitLab Runner with Docker executor.
+# Do not enable "pipelines must succeed" before a Runner is available.
+stages: [validate]
+validate_snapshot:
+  image: python:3.12-alpine
+  stage: validate
+  script:
+    - python scripts/check_snapshot.py flows/shared
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+# Deliberately no deploy job. Human rollout remains separate.

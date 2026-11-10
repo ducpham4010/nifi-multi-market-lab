@@ -1,0 +1,12 @@
+Port 18022
+ListenAddress 0.0.0.0
+HostKey /etc/gitlab/ssh_host_rsa_key
+HostKey /etc/gitlab/ssh_host_ecdsa_key
+HostKey /etc/gitlab/ssh_host_ed25519_key
+PermitRootLogin no
+PasswordAuthentication no
+AuthorizedKeysFile %h/.ssh/authorized_keys
+UsePAM yes
+Subsystem sftp internal-sftp
+AllowUsers git
+UseDNS no
