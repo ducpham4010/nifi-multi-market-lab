@@ -1,14 +1,14 @@
 # Phạm vi kiểm tra
 
 Bộ lab được tạo và bắt đầu triển khai trên máy RHEL ngày 2026-11-10.
-Hạ tầng đã được kiểm tra trực tiếp theo phạm vi dưới đây; luồng thực hành
-Kafka → NiFi → PostgreSQL chưa được dựng và chạy end-to-end.
+Hạ tầng đã được kiểm tra trực tiếp theo phạm vi dưới đây. Luồng Kafka → NiFi →
+PostgreSQL staging đã chạy end-to-end ở bước 7.9; flow promotion và rollout thị trường còn chờ kiểm chứng.
 
 ## Kiểm tra trực tiếp trên máy lab
 
 - Host RHEL 9.8 tại `192.168.102.4`, Docker Compose 5.5.1; đã pull các image được pin và build image NiFi kèm PostgreSQL JDBC driver.
 - Kafka VN có `trips`, `trips-staging`; Kafka INDO có `trips`. Mỗi topic có 3 partition, replication factor 1 và có leader.
-- Cả hai PostgreSQL đã có bảng `market.trip_events` và `staging.trip_events`; các bảng đang rỗng để bắt đầu bài lab.
+- Cả hai PostgreSQL đã có bảng `market.trip_events` và `staging.trip_events`; các bảng rỗng lúc seed ban đầu. Kết quả test staging bổ sung ở dưới.
 - Cả hai Vault đã initialized/unsealed, seed KV riêng từng môi trường; file root token/unseal key nằm trong `.private/` với quyền `0600`.
 - Cả ba NiFi đã đăng nhập bằng tài khoản admin, có context `shared-runtime` gồm 8 parameter và có JDBC JAR. Đã đối chiếu các giá trị không sensitive với Vault và kiểm tra `db.password` được đánh dấu Sensitive; API không trả lại giá trị password để đối chiếu.
 - UI của cả ba NiFi trả HTTP 200 khi truy cập từ máy Mac qua LAN.
@@ -44,6 +44,14 @@ docker compose exec -T -e NIFI_TLS_CONFIG_SCRIPT=/opt/nifi/scripts/configure-bro
   nifi-stag python3 - < tests/test_browser_tls.py
 ```
 
+## Bổ sung: staging end-to-end ở bước 7.9
+
+- Truy vết FlowFile `3d2a6e70-7cfb-4c82-b115-2ce6a05577ce`: ConsumeKafka RECEIVE → StampFlowVersion → PutDatabaseRecord SEND → LocalMarketTag → AuditSuccess DROP; Details cuối là `Auto-Terminated by success Relationship`.
+- Khi DB vẫn rỗng, cấu hình live PutDatabaseRecord có **Statement Type = UPDATE**, Update Keys = event_id. Đây là UPDATE thành công nhưng không có row khớp; nhánh success/SEND/DROP không chứng minh row đã tồn tại.
+- Đã backup cấu hình processor trong `.private/`, stop riêng PutDatabaseRecord, đổi duy nhất Statement Type thành **UPSERT**, xác nhận các property khác giữ nguyên rồi start lại.
+- Gửi lại `bash scripts/produce.sh stag stag-v1-001`: query `staging.trip_events` trên PostgreSQL VN có đúng 1 row, `event_id=stag-v1-001`, `customer_id=C001`, `amount=125.50`. Bảng market của VN và INDO vẫn 0 row tại thời điểm kiểm tra.
+- Test gửi qua Kafka và query DB thực tế; chưa publish version, tạo MR hoặc rollout VN/INDO trong lần kiểm tra này.
+
 ## Kiểm tra tĩnh và mock khi soạn bộ lab
 
 - Docker Registry xác nhận HTTP 200 cho cả 5 image tag trong .env.example; đây là kiểm tra manifest trước khi triển khai trực tiếp.
@@ -65,7 +73,7 @@ python3 tests/test_scripts.py
 
 **Mock chỉ kiểm tra logic script, không chứng minh integration thật.** Chưa xác nhận
 GitLab SSH key authentication/clone, import/change-version trên UI, round-trip Kafka → NiFi →
-PostgreSQL, rollout/rollback hay backup restore thực tế. Chưa kiểm tra chính sách
+PostgreSQL tại runtime VN/INDO, rollout/rollback hay backup restore thực tế. Chưa kiểm tra chính sách
 firewall/SELinux ở chế độ enforcing. Các bước thực hành có acceptance cases trong
 CASES.md.
 

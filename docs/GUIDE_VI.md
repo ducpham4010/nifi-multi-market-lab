@@ -557,6 +557,11 @@ Không chọn processor đời NiFi 1.x có tên `ConsumeKafka_2_6`. Với `FLOW
 
 Nếu một property phụ thuộc lựa chọn khác chưa hiện, chọn Statement Type/Database Type trước rồi tìm lại. Không điền **Database Name** bằng `market` để thay cho Schema Name; database đã nằm trong JDBC URL.
 
+Sau khi Apply, mở lại Configure → Properties để xác nhận **Statement Type vẫn là UPSERT**,
+Update Keys = `event_id`. Nếu chọn nhầm **UPDATE**, một event ID mới chưa có trong bảng
+sẽ không tạo row. PostgreSQL có thể hoàn tất UPDATE với 0 row mà không báo lỗi, nên
+FlowFile vẫn đi nhánh success; đây chưa phải bằng chứng dữ liệu đã được ghi.
+
 ### 7.5 Tạo Output Port và nối connection
 
 1. Kéo icon **Output Port** vào bên phải PutDatabaseRecord.
@@ -643,7 +648,7 @@ bash scripts/query.sh indo
 1. Query staging phải có `event_id=stag-v1-001`; bản tin này không xuất hiện trong schema market của VN/INDO.
 2. Trên NiFi staging, nhìn lần lượt các queue `KAFKA_TO_STAMP`, `STAMP_TO_DB`, `DB_SUCCESS`. Chúng có thể lên rồi xuống rất nhanh; không kịp thấy queue tăng không có nghĩa mất bản tin.
 3. Vào LOCAL_AUDIT, chuột phải **AuditSuccess → View data provenance** để xem events của processor đó.
-4. Ở event mới, mở chi tiết, tab **Attributes**, tìm `flow.release=v1` và `local.market=STAG`. Ghi lại event ID và thời gian làm bằng chứng.
+4. Ở event mới, mở chi tiết, tab **Attributes**, tìm `flow.release=v1` và `local.market=STAG`. Ghi lại event ID và thời gian làm bằng chứng. Event **DROP** tại AuditSuccess với Details **Auto-Terminated by success Relationship** là kết quả đã cấu hình ở mục 7.6; nó cho biết nhánh audit kết thúc, không thay thế kiểm tra row trong database.
 5. Có thể xem log riêng mà không in payload:
 
 ```bash
@@ -652,6 +657,17 @@ docker compose logs --since=5m nifi-stag | grep -E 'flow.release|local.market'
 
 6. Nếu queue lỗi tăng: về LOCAL_AUDIT, chuột phải connection **FAILED_RECORDS → List queue**; mở một FlowFile để xem Attributes/Content và `putdatabaserecord.error` nếu có. Không chọn **Empty queue** để bỏ lỗi.
 7. Gửi lại cùng event ID, query staging vẫn chỉ một row theo khóa chính. Đây là UPSERT idempotent ở sink mẫu, chưa chứng minh distributed exactly-once.
+
+Nếu thấy AuditSuccess/DROP nhưng query staging vẫn rỗng:
+
+1. Vào shared PG, chuột phải **PutDatabaseRecord → Stop**; đợi active threads = 0.
+2. Configure → Properties: kiểm tra **Statement Type = UPSERT**, **Update Keys = event_id**,
+   Schema Name = `#{db.schema}`, Table Name = `#{db.table}`; bấm **Apply** nếu đã sửa.
+3. Mở Parameter Context để đối chiếu `db.schema=staging` và PostgresPool dùng JDBC URL VN cổng 15432.
+4. Start lại PutDatabaseRecord.
+5. Gửi lại `bash scripts/produce.sh stag stag-v1-001`, rồi chạy `bash scripts/query.sh stag`.
+   Kafka đã commit offset của lần trước nên đổi processor không tự đọc lại bản tin cũ.
+6. Chỉ tiếp tục publish khi query thấy đúng row; không dùng một event SEND/DROP làm tiêu chí duy nhất.
 
 **Đạt trước mục 8:** row staging đúng, audit v1/STAG, nhánh success drain về 0, nhánh lỗi không còn record chưa giải thích.
 
