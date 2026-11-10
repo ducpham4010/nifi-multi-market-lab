@@ -1,5 +1,7 @@
 # Hướng dẫn lab từ đầu đến cuối
 
+Nếu mới làm quen với NiFi, đọc [tài liệu giải thích các thành phần và cách phối hợp](NIFI_CONCEPTS_VI.md) ([PDF](../output/pdf/NIFI_CONCEPTS_VI.pdf)) trước hoặc mở song song khi thực hành.
+
 ## 0. Mở đúng ứng dụng và chọn điểm bắt đầu
 
 Guide dùng giao diện tiếng Anh của **NiFi 2.6.0**, GitLab CE **18.2.1** và Vault **1.19.5**. Tên nút tiếng Anh được in đậm; nội dung trong code là giá trị cần nhập. Các lệnh Bash chạy trong SSH máy lab, không chạy ở ô Properties của NiFi.
@@ -379,6 +381,68 @@ Chạy kiểm tra hạ tầng trên máy Docker host:
 python3 scripts/check-infra.py
 python3 scripts/check-nifi-sessions.py
 ```
+
+### 5.5 Làm hoàn toàn trên UI thay cho sync-params.py
+
+Có hai cách khác nhau: **nhập tay Parameter Context** để thay đúng công việc của
+bridge, hoặc dùng **Parameter Provider** để NiFi tự đọc Vault bằng Fetch/Apply.
+Các bước dưới là cách nhập tay, giữ cùng thiết kế snapshot của bài chính.
+
+**Chọn đúng cặp Vault / NiFi trước khi copy:**
+
+| NiFi cần cấu hình | Vault UI | Secret chứa 8 giá trị |
+|---|---|---|
+| staging | `http://192.168.102.4:18200/ui/` | `kv/staging` |
+| VN | `http://192.168.102.4:18200/ui/` | `kv/runtime` |
+| INDO | `http://192.168.102.4:28200/ui/` | `kv/runtime` |
+
+1. Nếu shared PG đang chạy, **Stop ConsumeKafka**, đợi queues downstream drain,
+   rồi **Stop shared PG** và đợi active threads = 0. Giữ lại các record lỗi để xử lý.
+2. Mở đúng Vault trong bảng, đăng nhập bằng Method = Token theo mục 5.1, mở
+   `kv/` và secret tương ứng. Dùng các giá trị thực tế đang lưu trong secret.
+3. Mở NiFi tương ứng bằng hostname riêng → menu ba gạch → **Parameter Contexts**.
+4. Nếu `shared-runtime` đã có, mở **Edit** ở dòng đó. Nếu chưa có, bấm **+** ở
+   trang Parameter Contexts để tạo; tab **Settings**, Name = `shared-runtime`.
+   Không tạo bản thứ hai khi context cũ đã tồn tại.
+5. Chọn tab **Parameters**. Để thêm parameter mới, bấm **+** trong tab này.
+   Để sửa parameter đã có, mở thao tác **Edit** ở dòng parameter đó.
+6. Dialog **Add Parameter** hoặc **Edit Parameter**: điền **Name**, **Value**,
+   chọn **Sensitive Value = Yes/No**, rồi bấm **Ok** theo bảng dưới.
+
+| Name | Value lấy từ Vault | Sensitive Value |
+|---|---|---|
+| `kafka.bootstrap` | Giá trị key `kafka.bootstrap` | No |
+| `kafka.topic` | Giá trị key `kafka.topic` | No |
+| `kafka.group` | Giá trị key `kafka.group` | No |
+| `db.url` | Giá trị key `db.url` | No |
+| `db.username` | Giá trị key `db.username` | No |
+| `db.password` | Password DB trong key `db.password` | **Yes** |
+| `db.schema` | Giá trị key `db.schema` | No |
+| `db.table` | Giá trị key `db.table` | No |
+
+7. Value là giá trị thật, ví dụ `kafka.topic=trips` trên VN, không phải
+   `#{kafka.topic}`. Cú pháp `#{...}` được dùng trong property của processor/service.
+8. Sau khi đủ 8 parameter, bấm **Apply** ở dialog **Edit Parameter Context**;
+   chỉ bấm Ok ở từng parameter chưa hoàn tất lưu cả context. Đợi tiến trình update
+   xong rồi bấm **Close**.
+9. Mở lại context để đối chiếu topic/group/schema theo bảng 5.1. `db.password`
+   hiện **Sensitive value set** là bình thường. Nếu cần đổi password, nhập lại
+   giá trị từ Vault; nếu chỉ xem, đóng dialog mà không sửa.
+10. Menu → **Canvas**, về `MARKET_RUNTIME`, chuột phải `kafka-to-postgres` →
+    **Configure → Settings → Parameter Context = shared-runtime** → **Apply**
+    nếu PG chưa bind context này.
+11. Kiểm tra Controller Services Enabled, validation không lỗi; start downstream
+    trước, ConsumeKafka sau cùng. Test bằng produce/query như mục 7.9.
+
+Nhập tay trên UI không tạo liên kết tự động với Vault. Mỗi lần Vault đổi, phải
+copy lại giá trị cần đổi vào NiFi; nếu chạy lại bridge, giá trị trong Vault sẽ được
+apply lại. Với context đã có Sensitivity sai, không chuyển đổi/xóa parameter đang
+được sử dụng tùy tiện; dừng flow và xử lý binding trước khi tạo lại parameter đúng.
+
+Nếu muốn **NiFi tự đọc Vault qua UI**, xem **mục 13**: tạo Vault client tại
+Management Controller Services, tạo HashiCorpVaultParameterProvider, rồi
+**Fetch Parameters → Apply** vào `vault-preview`. Context đó do provider quản lý;
+bài mở rộng dùng secret/context riêng để tránh trộn hai cơ chế quản lý shared-runtime.
 
 ## 6. Cấu hình Registry Client trên từng NiFi
 

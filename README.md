@@ -12,6 +12,8 @@ username, password và token thực tế. File này được giữ local và b�
 Mở ba NiFi bằng hostname riêng trong file truy cập hoặc [mục 0 của guide](docs/GUIDE_VI.md#0-mở-đúng-ứng-dụng-và-chọn-điểm-bắt-đầu).
 Ba tab cùng IP khác cổng sẽ ghi đè cookie đăng nhập của nhau; phiên Single User của NiFi 2.6 có thời hạn 8 giờ.
 
+**Mới học NiFi?** Đọc [Hiểu NiFi từ những thành phần đầu tiên](docs/NIFI_CONCEPTS_VI.md) — giải thích các khái niệm, cách phối hợp và 7 sơ đồ minh họa. Có [bản PDF để đọc hoặc in](output/pdf/NIFI_CONCEPTS_VI.pdf).
+
 ## Phạm vi thiết kế
 
 - 2 Kafka độc lập, mỗi Kafka 1 broker KRaft; 2 Postgres độc lập; 2 Vault persistent độc lập.

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1200" height="850" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1200 850" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1200" height="850"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-850)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1200" height="850" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="40" y="812" style="font-family: Arial; font-weight: bold; font-size: 30px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1624) scale(1,-1)">ĐƯA CẤU HÌNH TỪ VAULT VÀO NIFI</text>
+			<text x="40" y="777" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,1554) scale(1,-1)">Các mũi tên ở hình này là cấu hình; không có FlowFile đi qua Vault</text>
+			<text x="40" y="722" style="font-family: Arial; font-weight: bold; font-size: 22px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1444) scale(1,-1)">A. BRIDGE CỦA BÀI CHÍNH</text>
+			<rect x="40" y="545" width="245" height="150" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="57" y="661" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1322) scale(1,-1)">Vault</text>
+			<text x="57" y="622" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1244) scale(1,-1)">kv/staging hoặc</text>
+			<text x="57" y="594" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1188) scale(1,-1)">kv/runtime</text>
+			<rect x="330" y="545" width="250" height="150" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="347" y="661" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1322) scale(1,-1)">sync-params.py</text>
+			<text x="347" y="622" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1244) scale(1,-1)">đọc và apply qua API</text>
+			<rect x="625" y="545" width="290" height="150" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="642" y="661" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1322) scale(1,-1)">shared-runtime</text>
+			<text x="642" y="622" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1244) scale(1,-1)">Parameter Context local</text>
+			<rect x="960" y="545" width="200" height="150" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="977" y="661" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1322) scale(1,-1)">Shared PG</text>
+			<text x="977" y="622" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1244) scale(1,-1)">#{parameter}</text>
+			<path d="M 288,620 L 322,620 Z" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="322 620, 308 614, 308 626" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(19%,39%,78%); fill-rule: evenodd;"/>
+			<path d="M 583,620 L 617,620 Z" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="617 620, 603 614, 603 626" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(19%,39%,78%); fill-rule: evenodd;"/>
+			<path d="M 918,620 L 952,620 Z" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="952 620, 938 614, 938 626" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(19%,39%,78%); fill-rule: evenodd;"/>
+			<text x="40" y="450" style="font-family: Arial; font-weight: bold; font-size: 22px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,900) scale(1,-1)">B. NATIVE PARAMETER PROVIDER TRÊN UI</text>
+			<rect x="40" y="265" width="200" height="155" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="57" y="386" style="font-family: Arial; font-weight: bold; font-size: 23px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,772) scale(1,-1)">Vault</text>
+			<text x="57" y="349" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,698) scale(1,-1)">kv/preview</text>
+			<rect x="285" y="265" width="245" height="155" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="302" y="386" style="font-family: Arial; font-weight: bold; font-size: 23px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,772) scale(1,-1)">VaultPreviewClient</text>
+			<text x="302" y="349" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,698) scale(1,-1)">kết nối + xác thực</text>
+			<rect x="575" y="265" width="245" height="155" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="592" y="386" style="font-family: Arial; font-weight: bold; font-size: 20.5px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,772) scale(1,-1)">VaultPreviewProvider</text>
+			<text x="592" y="351.5" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,703) scale(1,-1)">Fetch Parameters</text>
+			<rect x="865" y="265" width="295" height="155" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="882" y="386" style="font-family: Arial; font-weight: bold; font-size: 23px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,772) scale(1,-1)">vault-preview</text>
+			<text x="882" y="349" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,698) scale(1,-1)">context sau Apply</text>
+			<path d="M 243,343 L 277,343 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="277 343, 263 337, 263 349" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<path d="M 533,343 L 567,343 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="567 343, 553 337, 553 349" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<path d="M 823,343 L 857,343 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="857 343, 843 337, 843 349" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<rect x="40" y="50" width="1120" height="135" rx="14" ry="14" style="stroke: rgb(68%,40%,10%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(100%,96%,90%); fill-rule: evenodd;"/>
+			<text x="57" y="151" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(68%,40%,10%); stroke:none;" transform="translate(0,302) scale(1,-1)">FETCH ≠ APPLY ≠ BIND ≠ START</text>
+			<text x="57" y="112" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,224) scale(1,-1)">Fetch lấy giá trị; Apply cập nhật context; Bind gắn context vào PG; Start chạy flow.</text>
+			<text x="57" y="83" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,166) scale(1,-1)">vault-preview chưa bind shared PG trong bài mở rộng.</text>
+		</g>
+	</g>
+</svg>

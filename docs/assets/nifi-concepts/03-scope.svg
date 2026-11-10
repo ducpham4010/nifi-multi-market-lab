@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1200" height="810" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1200 810" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1200" height="810"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-810)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1200" height="810" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="40" y="772" style="font-family: Arial; font-weight: bold; font-size: 30px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1544) scale(1,-1)">PHẠM VI CỦA NHÓM VÀ CẤU HÌNH</text>
+			<text x="40" y="737" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,1474) scale(1,-1)">PG ngang hàng không tự chia sẻ mọi service và parameter</text>
+			<rect x="345" y="90" width="810" height="605" rx="16" ry="16" style="stroke: rgb(85%,88%,92%); stroke-linecap: butt; stroke-width: 2; fill: rgb(95%,96%,98%); fill-rule: evenodd;"/>
+			<text x="372" y="658" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1316) scale(1,-1)">MARKET_RUNTIME  /  canvas cha</text>
+			<rect x="385" y="350" width="730" height="270" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="402" y="586" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1172) scale(1,-1)">kafka-to-postgres  /  SHARED PG</text>
+			<text x="402" y="547" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1094) scale(1,-1)">Processors: ConsumeKafka, StampFlowVersion, PutDatabaseRecord</text>
+			<text x="402" y="518" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1036) scale(1,-1)">Services: KafkaConnection, PostgresPool, TripJsonReader</text>
+			<rect x="425" y="380" width="650" height="70" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="442" y="416" style="font-family: Arial; font-weight: bold; font-size: 21px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,832) scale(1,-1)">PG con (nếu có): dùng được service của shared PG</text>
+			<rect x="385" y="130" width="730" height="170" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="402" y="266" style="font-family: Arial; font-weight: bold; font-size: 24px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,532) scale(1,-1)">LOCAL_AUDIT  /  PG NGANG HÀNG</text>
+			<text x="402" y="228" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,456) scale(1,-1)">LocalMarketTag, AuditSuccess, input ports và queue giữ lỗi</text>
+			<text x="402" y="199" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,398) scale(1,-1)">Không tự thấy PostgresPool nằm trong shared PG</text>
+			<rect x="35" y="460" width="265" height="160" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="52" y="586" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,1172) scale(1,-1)">shared-runtime</text>
+			<text x="52" y="547" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1094) scale(1,-1)">db.schema = staging</text>
+			<text x="52" y="518" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1036) scale(1,-1)">context của instance</text>
+			<path d="M 300,545 L 375,545 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="375 545, 361 539, 361 551" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<text x="307" y="565" style="font-family: Arial; font-size: 19px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,1130) scale(1,-1)">bind</text>
+			<rect x="35" y="130" width="265" height="275" rx="14" ry="14" style="stroke: rgb(68%,40%,10%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(100%,96%,90%); fill-rule: evenodd;"/>
+			<text x="52" y="371" style="font-family: Arial; font-weight: bold; font-size: 21px;fill: rgb(68%,40%,10%); stroke:none;" transform="translate(0,742) scale(1,-1)">CẦN PHÂN BIỆT</text>
+			<text x="52" y="336" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,672) scale(1,-1)">Service có phạm vi theo</text>
+			<text x="52" y="309" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,618) scale(1,-1)">cây PG.</text>
+			<text x="52" y="282" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,564) scale(1,-1)">Parameter Context của</text>
+			<text x="52" y="255" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,510) scale(1,-1)">PG con phải được gắn rõ</text>
+			<text x="52" y="228" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,456) scale(1,-1)">ràng.</text>
+			<text x="52" y="201" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,402) scale(1,-1)">Context Inheritance là cơ</text>
+			<text x="52" y="174" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,348) scale(1,-1)">chế riêng.</text>
+			<text x="40" y="35" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,70) scale(1,-1)">Đặt đúng scope để component nhìn thấy đúng tài nguyên và snapshot có đúng ranh giới.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1200" height="760" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1200" height="760"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-760)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1200" height="760" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="40" y="722" style="font-family: Arial; font-weight: bold; font-size: 30px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1444) scale(1,-1)">FLOWFILE: CONTENT + ATTRIBUTES</text>
+			<text x="40" y="687" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,1374) scale(1,-1)">Một đơn vị dữ liệu có payload và metadata đi cùng nhau</text>
+			<rect x="25" y="175" width="1150" height="480" rx="18" ry="18" style="stroke: rgb(85%,88%,92%); stroke-linecap: butt; stroke-width: 2; fill: rgb(95%,96%,98%); fill-rule: evenodd;"/>
+			<text x="50" y="615" style="font-family: Arial; font-weight: bold; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1230) scale(1,-1)">FlowFile UUID: 3d2a6e70-...  (ID kỹ thuật)</text>
+			<rect x="50" y="210" width="585" height="375" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="67" y="551" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1102) scale(1,-1)">CONTENT</text>
+			<text x="72" y="502" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1004) scale(1,-1)">{</text>
+			<text x="72" y="468" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,936) scale(1,-1)">  &quot;event_id&quot;: &quot;stag-v1-001&quot;,</text>
+			<text x="72" y="434" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,868) scale(1,-1)">  &quot;customer_id&quot;: &quot;C001&quot;,</text>
+			<text x="72" y="400" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,800) scale(1,-1)">  &quot;amount&quot;: 125.50,</text>
+			<text x="72" y="366" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,732) scale(1,-1)">  &quot;event_time&quot;: &quot;2026-11-11T01:00:00Z&quot;</text>
+			<text x="72" y="332" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,664) scale(1,-1)">}</text>
+			<rect x="675" y="210" width="475" height="375" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="692" y="551" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,1102) scale(1,-1)">ATTRIBUTES</text>
+			<text x="692" y="512" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1024) scale(1,-1)">uuid = 3d2a6e70-...</text>
+			<text x="692" y="483" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,966) scale(1,-1)">kafka.topic = trips-staging</text>
+			<text x="692" y="454" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,908) scale(1,-1)">kafka.partition = 1</text>
+			<text x="692" y="425" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,850) scale(1,-1)">kafka.offset = 0</text>
+			<text x="692" y="396" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,792) scale(1,-1)">flow.release = v1</text>
+			<text x="692" y="367" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,734) scale(1,-1)">local.market = STAG</text>
+			<rect x="50" y="35" width="1100" height="110" rx="14" ry="14" style="stroke: rgb(68%,40%,10%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(100%,96%,90%); fill-rule: evenodd;"/>
+			<text x="67" y="111" style="font-family: Arial; font-weight: bold; font-size: 24px;fill: rgb(68%,40%,10%); stroke:none;" transform="translate(0,222) scale(1,-1)">PROPERTY NẰM TRÊN COMPONENT</text>
+			<text x="67" y="73" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,146) scale(1,-1)">Ví dụ trên PutDatabaseRecord: Schema Name = #{db.schema}</text>
+		</g>
+	</g>
+</svg>

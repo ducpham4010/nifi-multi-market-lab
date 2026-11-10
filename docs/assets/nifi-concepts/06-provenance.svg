@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1200" height="850" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1200 850" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1200" height="850"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-850)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1200" height="850" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="40" y="812" style="font-family: Arial; font-weight: bold; font-size: 30px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1624) scale(1,-1)">PROVENANCE KỂ LẠI HÀNH TRÌNH</text>
+			<text x="40" y="777" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,1554) scale(1,-1)">Đọc cùng UUID, component và Details; đối chiếu thêm kết quả hệ đích</text>
+			<rect x="40" y="495" width="210" height="205" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="57" y="666" style="font-family: Arial; font-weight: bold; font-size: 24px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,1332) scale(1,-1)">RECEIVE</text>
+			<text x="57" y="628" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1256) scale(1,-1)">ConsumeKafka</text>
+			<text x="57" y="601" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1202) scale(1,-1)">nhận bản tin</text>
+			<path d="M 252,598 L 262,598 Z" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="262 598, 248 592, 248 604" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(47%,31%,67%); fill-rule: evenodd;"/>
+			<rect x="265" y="495" width="210" height="205" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="282" y="666" style="font-family: Arial; font-weight: bold; font-size: 24px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,1332) scale(1,-1)">ATTRIBUTES</text>
+			<text x="282" y="635" style="font-family: Arial; font-weight: bold; font-size: 24px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,1270) scale(1,-1)">MODIFIED</text>
+			<text x="282" y="597" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1194) scale(1,-1)">StampFlowVersion</text>
+			<text x="282" y="570" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1140) scale(1,-1)">thêm flow.release</text>
+			<path d="M 477,598 L 487,598 Z" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="487 598, 473 592, 473 604" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(47%,31%,67%); fill-rule: evenodd;"/>
+			<rect x="490" y="495" width="210" height="205" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="507" y="666" style="font-family: Arial; font-weight: bold; font-size: 24px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,1332) scale(1,-1)">SEND</text>
+			<text x="507" y="628" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1256) scale(1,-1)">PutDatabaseRecord</text>
+			<text x="507" y="601" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1202) scale(1,-1)">gửi tới DB</text>
+			<path d="M 702,598 L 712,598 Z" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="712 598, 698 592, 698 604" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(47%,31%,67%); fill-rule: evenodd;"/>
+			<rect x="715" y="495" width="210" height="205" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="732" y="666" style="font-family: Arial; font-weight: bold; font-size: 24px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,1332) scale(1,-1)">ATTRIBUTES</text>
+			<text x="732" y="635" style="font-family: Arial; font-weight: bold; font-size: 24px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,1270) scale(1,-1)">MODIFIED</text>
+			<text x="732" y="597" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1194) scale(1,-1)">LocalMarketTag</text>
+			<text x="732" y="570" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1140) scale(1,-1)">thêm local.market</text>
+			<path d="M 927,598 L 937,598 Z" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="937 598, 923 592, 923 604" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(47%,31%,67%); fill-rule: evenodd;"/>
+			<rect x="940" y="495" width="210" height="205" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="957" y="666" style="font-family: Arial; font-weight: bold; font-size: 24px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,1332) scale(1,-1)">DROP</text>
+			<text x="957" y="628" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1256) scale(1,-1)">AuditSuccess</text>
+			<text x="957" y="601" style="font-family: Arial; font-size: 20px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1202) scale(1,-1)">auto-terminate</text>
+			<rect x="45" y="185" width="525" height="215" rx="14" ry="14" style="stroke: rgb(71%,29%,31%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(98%,93%,94%); fill-rule: evenodd;"/>
+			<text x="62" y="366" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(71%,29%,31%); stroke:none;" transform="translate(0,732) scale(1,-1)">UPDATE + ID chưa tồn tại</text>
+			<text x="62" y="327" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,654) scale(1,-1)">Có thể hoàn tất với 0 row.</text>
+			<text x="62" y="297" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,594) scale(1,-1)">FlowFile vẫn có thể đi nhánh success.</text>
+			<text x="62" y="267" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,534) scale(1,-1)">SEND / DROP chưa đủ kết luận DB có row.</text>
+			<rect x="630" y="185" width="525" height="215" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="647" y="366" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,732) scale(1,-1)">UPSERT + ID chưa tồn tại</text>
+			<text x="647" y="327" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,654) scale(1,-1)">Tạo row nếu hợp đồng/schema hợp lệ.</text>
+			<text x="647" y="297" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,594) scale(1,-1)">Query theo event_id để xác nhận.</text>
+			<text x="647" y="267" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,534) scale(1,-1)">Kiểm tra cả giá trị các cột mong đợi.</text>
+			<text x="45" y="95" style="font-family: Arial; font-weight: bold; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,190) scale(1,-1)">Bằng chứng mạnh trong lab: đường đi FlowFile + query PostgreSQL đúng event_id.</text>
+			<text x="45" y="52" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,104) scale(1,-1)">DROP ở AuditSuccess với Details auto-terminate không phát lệnh DELETE row trong DB.</text>
+		</g>
+	</g>
+</svg>

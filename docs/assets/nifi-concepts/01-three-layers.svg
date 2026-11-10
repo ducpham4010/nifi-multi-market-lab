@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1200" height="760" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1200" height="760"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-760)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1200" height="760" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="40" y="722" style="font-family: Arial; font-weight: bold; font-size: 30px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1444) scale(1,-1)">BA LỚP ĐỂ HIỂU MỘT FLOW</text>
+			<text x="40" y="687" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,1374) scale(1,-1)">Đường dữ liệu, nguồn cấu hình và bằng chứng vận hành</text>
+			<text x="40" y="645" style="font-family: Arial; font-weight: bold; font-size: 19px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">CẤU HÌNH</text>
+			<rect x="235" y="495" width="330" height="135" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="252" y="596" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,1192) scale(1,-1)">Parameter Context</text>
+			<text x="252" y="557" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1114) scale(1,-1)">db.schema, db.url, kafka.topic</text>
+			<rect x="650" y="495" width="510" height="135" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="667" y="596" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,1192) scale(1,-1)">Controller Services</text>
+			<text x="667" y="557" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1114) scale(1,-1)">KafkaConnection · PostgresPool</text>
+			<text x="667" y="529" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1058) scale(1,-1)">TripJsonReader</text>
+			<path d="M 395,495 L 395,455 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<path d="M 395,455 L 315,455 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<path d="M 315,455 L 315,395 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="315 395, 309 409, 321 409" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<path d="M 490,495 L 490,440 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<path d="M 490,440 L 775,440 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<path d="M 775,440 L 775,395 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="775 395, 769 409, 781 409" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<path d="M 905,495 L 905,465 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<path d="M 905,465 L 815,465 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<path d="M 815,465 L 815,395 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="815 395, 809 409, 821 409" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<text x="40" y="415" style="font-family: Arial; font-weight: bold; font-size: 19px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,830) scale(1,-1)">DỮ LIỆU</text>
+			<rect x="40" y="275" width="150" height="120" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="57" y="361" style="font-family: Arial; font-weight: bold; font-size: 23px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,722) scale(1,-1)">Kafka</text>
+			<text x="57" y="324" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,648) scale(1,-1)">nguồn</text>
+			<rect x="225" y="275" width="200" height="120" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="242" y="361" style="font-family: Arial; font-weight: bold; font-size: 22.5px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,722) scale(1,-1)">ConsumeKafka</text>
+			<text x="242" y="324.5" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,649) scale(1,-1)">đọc record</text>
+			<rect x="460" y="275" width="150" height="120" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="477" y="361" style="font-family: Arial; font-weight: bold; font-size: 23px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,722) scale(1,-1)">Queue</text>
+			<text x="477" y="324" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,648) scale(1,-1)">chờ xử lý</text>
+			<rect x="650" y="275" width="235" height="120" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="667" y="361" style="font-family: Arial; font-weight: bold; font-size: 21.0px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,722) scale(1,-1)">PutDatabaseRecord</text>
+			<text x="667" y="326.0" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,652) scale(1,-1)">ghi dữ liệu</text>
+			<rect x="925" y="275" width="235" height="120" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="942" y="361" style="font-family: Arial; font-weight: bold; font-size: 23px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,722) scale(1,-1)">PostgreSQL</text>
+			<text x="942" y="324" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,648) scale(1,-1)">row đích</text>
+			<path d="M 194,335 L 218,335 Z" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="218 335, 204 329, 204 341" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(19%,39%,78%); fill-rule: evenodd;"/>
+			<path d="M 429,335 L 453,335 Z" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="453 335, 439 329, 439 341" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(19%,39%,78%); fill-rule: evenodd;"/>
+			<path d="M 614,335 L 643,335 Z" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="643 335, 629 329, 629 341" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(19%,39%,78%); fill-rule: evenodd;"/>
+			<path d="M 889,335 L 918,335 Z" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="918 335, 904 329, 904 341" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(19%,39%,78%); fill-rule: evenodd;"/>
+			<text x="40" y="200" style="font-family: Arial; font-weight: bold; font-size: 19px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,400) scale(1,-1)">QUAN SÁT</text>
+			<rect x="300" y="65" width="530" height="115" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="317" y="146" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,292) scale(1,-1)">Data Provenance / Bulletin / Log</text>
+			<text x="317" y="107" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,214) scale(1,-1)">FlowFile đã qua đâu? Có lỗi gì?</text>
+			<rect x="870" y="65" width="290" height="115" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="887" y="146" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,292) scale(1,-1)">Query database</text>
+			<text x="887" y="107" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,214) scale(1,-1)">Row có đúng không?</text>
+			<path d="M 550,275 L 550,190 Z" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="550 190, 544 204, 556 204" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(47%,31%,67%); fill-rule: evenodd;"/>
+			<path d="M 1042,275 L 1042,190 Z" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 3; stroke-dasharray: 8, 6;"/>
+			<polygon points="1042 190, 1036 204, 1048 204" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(47%,31%,67%); fill-rule: evenodd;"/>
+			<text x="40" y="25" style="font-family: Arial; font-size: 20px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,50) scale(1,-1)">Mũi tên liền: dữ liệu. Nét đứt: cấu hình hoặc thông tin quan sát.</text>
+		</g>
+	</g>
+</svg>

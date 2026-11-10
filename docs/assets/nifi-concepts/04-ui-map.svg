@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1200" height="815" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1200 815" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1200" height="815"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-815)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1200" height="815" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="40" y="777" style="font-family: Arial; font-weight: bold; font-size: 30px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1554) scale(1,-1)">MỞ ĐÂU TRÊN GIAO DIỆN NIFI 2.6?</text>
+			<text x="40" y="742" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,1484) scale(1,-1)">Bản đồ chức năng - không phải screenshot</text>
+			<rect x="40" y="565" width="285" height="110" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="57" y="641" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1282) scale(1,-1)">Controller Settings</text>
+			<text x="57" y="602" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1204) scale(1,-1)">menu toàn cục</text>
+			<rect x="410" y="500" width="750" height="200" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="427" y="666" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1332) scale(1,-1)">Các tab trong Controller Settings</text>
+			<text x="427" y="627" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1254) scale(1,-1)">General · Management Controller Services</text>
+			<text x="427" y="597" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1194) scale(1,-1)">Reporting Tasks · Flow Analysis Rules</text>
+			<text x="427" y="567" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1134) scale(1,-1)">Registry Clients · Parameter Providers</text>
+			<path d="M 325,620 L 400,620 Z" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="400 620, 386 614, 386 626" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(19%,39%,78%); fill-rule: evenodd;"/>
+			<rect x="40" y="340" width="285" height="110" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="57" y="416" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,832) scale(1,-1)">Parameter Contexts</text>
+			<text x="57" y="377" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,754) scale(1,-1)">menu toàn cục</text>
+			<rect x="410" y="340" width="750" height="110" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="427" y="416" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,832) scale(1,-1)">shared-runtime / vault-preview</text>
+			<text x="427" y="377" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,754) scale(1,-1)">Edit → Parameters → Apply</text>
+			<path d="M 325,395 L 400,395 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="400 395, 386 389, 386 401" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<rect x="40" y="165" width="285" height="110" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="57" y="241" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,482) scale(1,-1)">Data Provenance</text>
+			<text x="57" y="202" style="font-family: Arial; font-size: 21px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,404) scale(1,-1)">menu toàn cục</text>
+			<rect x="410" y="165" width="750" height="110" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="427" y="241" style="font-family: Arial; font-weight: bold; font-size: 25px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,482) scale(1,-1)">Tìm lịch sử FlowFile</text>
+			<text x="427" y="202" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,404) scale(1,-1)">UUID → event details → attributes / lineage</text>
+			<path d="M 325,220 L 400,220 Z" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="400 220, 386 214, 386 226" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(47%,31%,67%); fill-rule: evenodd;"/>
+			<rect x="40" y="35" width="1120" height="75" rx="14" ry="14" style="stroke: rgb(68%,40%,10%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(100%,96%,90%); fill-rule: evenodd;"/>
+			<text x="57" y="76" style="font-family: Arial; font-weight: bold; font-size: 23px;fill: rgb(68%,40%,10%); stroke:none;" transform="translate(0,152) scale(1,-1)">TRONG CANVAS PG: chuột phải → Controller Services → service của flow</text>
+		</g>
+	</g>
+</svg>

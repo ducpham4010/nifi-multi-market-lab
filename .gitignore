@@ -4,3 +4,6 @@ backups/
 .private/
 *.log
 __pycache__/
+
+# PDF rendering previews
+tmp/pdfs/

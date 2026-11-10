@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1200" height="800" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1200" height="800"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-800)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1200" height="800" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="40" y="762" style="font-family: Arial; font-weight: bold; font-size: 30px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1524) scale(1,-1)">CÙNG FLOW, TRIỂN KHAI RIÊNG TỪNG THỊ TRƯỜNG</text>
+			<text x="40" y="727" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,1454) scale(1,-1)">Version cấu trúc flow và cấu hình/dữ liệu môi trường là các lớp khác nhau</text>
+			<rect x="40" y="505" width="255" height="155" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="57" y="626" style="font-family: Arial; font-weight: bold; font-size: 26px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1252) scale(1,-1)">NiFi staging</text>
+			<text x="57" y="586" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1172) scale(1,-1)">Save / Commit Local</text>
+			<text x="57" y="557" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1114) scale(1,-1)">Changes</text>
+			<rect x="355" y="505" width="300" height="155" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="372" y="626" style="font-family: Arial; font-weight: bold; font-size: 26px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,1252) scale(1,-1)">GitLab: staging</text>
+			<text x="372" y="586" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1172) scale(1,-1)">S1 - snapshot JSON</text>
+			<text x="372" y="557" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1114) scale(1,-1)">writer có quyền ghi</text>
+			<rect x="805" y="505" width="350" height="155" rx="14" ry="14" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(91%,96%,96%); fill-rule: evenodd;"/>
+			<text x="822" y="626" style="font-family: Arial; font-weight: bold; font-size: 27px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,1252) scale(1,-1)">GitLab: main</text>
+			<text x="822" y="585" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1170) scale(1,-1)">M1 - SHA đã duyệt</text>
+			<text x="822" y="556" style="font-family: Arial; font-size: 22px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,1112) scale(1,-1)">reader đọc để rollout</text>
+			<path d="M 300,580 L 345,580 Z" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="345 580, 331 574, 331 586" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(19%,39%,78%); fill-rule: evenodd;"/>
+			<path d="M 663,580 L 795,580 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="795 580, 781 574, 781 586" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<text x="665" y="620" style="font-family: Arial; font-weight: bold; font-size: 20px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,1240) scale(1,-1)">Review + MR</text>
+			<path d="M 980,505 L 980,430 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3;"/>
+			<path d="M 980,430 L 525,430 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3;"/>
+			<path d="M 525,430 L 525,345 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="525 345, 519 359, 531 359" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<path d="M 980,430 L 980,345 Z" style="stroke: rgb(3%,49%,50%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="980 345, 974 359, 986 359" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,50%); fill-rule: evenodd;"/>
+			<text x="360" y="382" style="font-family: Arial; font-size: 21px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,764) scale(1,-1)">Import / Change Version riêng</text>
+			<text x="800" y="382" style="font-family: Arial; font-size: 21px;fill: rgb(3%,49%,50%); stroke:none;" transform="translate(0,764) scale(1,-1)">Import / Change Version riêng</text>
+			<rect x="340" y="115" width="370" height="215" rx="14" ry="14" style="stroke: rgb(19%,39%,78%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(93%,95%,100%); fill-rule: evenodd;"/>
+			<text x="357" y="296" style="font-family: Arial; font-weight: bold; font-size: 27px;fill: rgb(19%,39%,78%); stroke:none;" transform="translate(0,592) scale(1,-1)">NiFi VN: cùng M1</text>
+			<text x="357" y="255" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,510) scale(1,-1)">Context: VN</text>
+			<text x="357" y="225" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,450) scale(1,-1)">Kafka/DB: 19092 / 15432</text>
+			<text x="357" y="195" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,390) scale(1,-1)">LOCAL_AUDIT: VN</text>
+			<rect x="785" y="115" width="370" height="215" rx="14" ry="14" style="stroke: rgb(47%,31%,67%); stroke-linecap: butt; stroke-width: 1.8; fill: rgb(95%,93%,98%); fill-rule: evenodd;"/>
+			<text x="802" y="296" style="font-family: Arial; font-weight: bold; font-size: 27px;fill: rgb(47%,31%,67%); stroke:none;" transform="translate(0,592) scale(1,-1)">NiFi INDO: cùng M1</text>
+			<text x="802" y="255" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,510) scale(1,-1)">Context: INDO</text>
+			<text x="802" y="225" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,450) scale(1,-1)">Kafka/DB: 29092 / 25432</text>
+			<text x="802" y="195" style="font-family: Arial; font-size: 23px;fill: rgb(9%,17%,27%); stroke:none;" transform="translate(0,390) scale(1,-1)">LOCAL_AUDIT: INDO</text>
+			<text x="40" y="50" style="font-family: Arial; font-size: 21px;fill: rgb(32%,40%,49%); stroke:none;" transform="translate(0,100) scale(1,-1)">Merge cập nhật Git. Mỗi market rollout riêng; queue, offsets và row DB vẫn là state local.</text>
+		</g>
+	</g>
+</svg>
