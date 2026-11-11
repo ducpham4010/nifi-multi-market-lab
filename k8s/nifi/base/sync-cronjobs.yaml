@@ -1,0 +1,153 @@
+# Job templates, suspended on purpose: parameters change only when an operator
+# runs them (k8s/scripts/nifi-sync.sh), e.g.
+#   kubectl -n nifi-vn create job --from=cronjob/vault-param-sync vault-param-sync-$(date +%s)
+# Both log in to Vault with this namespace's ServiceAccount "nifi".
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vault-param-sync
+spec:
+  suspend: true
+  schedule: "0 0 1 1 *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: vault-param-sync
+            app.kubernetes.io/part-of: nifi-market-lab
+        spec:
+          serviceAccountName: nifi
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          restartPolicy: Never
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          containers:
+          - name: sync
+            image: nifi-market-lab
+            imagePullPolicy: IfNotPresent
+            command: [python3, /opt/lab-sync/nifi_k8s_sync.py, params]
+            envFrom:
+            - configMapRef:
+                name: nifi-sync-env
+            env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NIFI_API_URL
+              value: https://nifi.$(POD_NAMESPACE).svc.cluster.local:8443/nifi-api
+            - name: NIFI_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: nifi-admin
+                  key: username
+            - name: NIFI_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nifi-admin
+                  key: password
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+            volumeMounts:
+            - name: script
+              mountPath: /opt/lab-sync
+              readOnly: true
+            - name: vault-token
+              mountPath: /var/run/secrets/vault
+              readOnly: true
+          volumes:
+          - name: script
+            configMap:
+              name: nifi-sync-script
+          - name: vault-token
+            projected:
+              sources:
+              - serviceAccountToken:
+                  audience: vault
+                  expirationSeconds: 600
+                  path: token
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: gitlab-registry-sync
+spec:
+  suspend: true
+  schedule: "0 0 1 1 *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: gitlab-registry-sync
+            app.kubernetes.io/part-of: nifi-market-lab
+        spec:
+          serviceAccountName: nifi
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          restartPolicy: Never
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          containers:
+          - name: sync
+            image: nifi-market-lab
+            imagePullPolicy: IfNotPresent
+            command: [python3, /opt/lab-sync/nifi_k8s_sync.py, registry]
+            envFrom:
+            - configMapRef:
+                name: nifi-sync-env
+            env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NIFI_API_URL
+              value: https://nifi.$(POD_NAMESPACE).svc.cluster.local:8443/nifi-api
+            - name: NIFI_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: nifi-admin
+                  key: username
+            - name: NIFI_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nifi-admin
+                  key: password
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+            volumeMounts:
+            - name: script
+              mountPath: /opt/lab-sync
+              readOnly: true
+            - name: vault-token
+              mountPath: /var/run/secrets/vault
+              readOnly: true
+          volumes:
+          - name: script
+            configMap:
+              name: nifi-sync-script
+          - name: vault-token
+            projected:
+              sources:
+              - serviceAccountToken:
+                  audience: vault
+                  expirationSeconds: 600
+                  path: token

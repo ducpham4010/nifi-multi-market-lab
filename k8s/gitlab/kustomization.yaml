@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gitlab
+labels:
+- pairs:
+    app.kubernetes.io/part-of: nifi-market-lab
+resources:
+- statefulset.yaml
+- services.yaml
+- httproute.yaml

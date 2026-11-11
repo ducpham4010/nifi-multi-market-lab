@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nifi-headless
+  labels:
+    app.kubernetes.io/name: nifi
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: nifi
+  ports:
+  - name: https
+    port: 8443
+---
+# In-cluster HTTPS API (sync jobs) and backend of the Gateway TLSRoute.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nifi
+  labels:
+    app.kubernetes.io/name: nifi
+spec:
+  selector:
+    app.kubernetes.io/name: nifi
+  ports:
+  - name: https
+    port: 8443
+    targetPort: https

@@ -1,0 +1,75 @@
+# Password comes from Secret postgres-auth (created from .env by deploy.sh, not stored in Git).
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  labels:
+    app.kubernetes.io/name: postgres
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres
+        app.kubernetes.io/part-of: nifi-market-lab
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      containers:
+      - name: postgres
+        image: postgres:16.9
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: postgres
+          containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: admin
+        - name: POSTGRES_DB
+          value: market
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-auth
+              key: password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        readinessProbe:
+          exec:
+            command: [pg_isready, -U, admin, -d, market, -h, 127.0.0.1]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command: [pg_isready, -U, admin, -d, market, -h, 127.0.0.1]
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          failureThreshold: 5
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+        - name: init
+          mountPath: /docker-entrypoint-initdb.d
+          readOnly: true
+      volumes:
+      - name: init
+        configMap:
+          name: postgres-init
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ReadWriteOnce]
+      resources:
+        requests:
+          storage: 5Gi

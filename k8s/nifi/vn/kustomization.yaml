@@ -1,0 +1,34 @@
+# VN market runtime: reads approved snapshots from main (Reporter PrAT, read_api).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: nifi-vn
+resources:
+- ../base
+configMapGenerator:
+# Browser hostname (cookie isolation), Host-header allowlist and certificate SANs.
+- name: nifi-env
+  literals:
+  - NIFI_BROWSER_HOST=nifi-vn.192.168.102.4.sslip.io
+  - NIFI_WEB_PROXY_HOST=192.168.102.4:31443,nifi-vn.192.168.102.4.sslip.io:31443,nifi-vn.192.168.102.4.sslip.io,nifi.nifi-vn.svc:8443,nifi.nifi-vn.svc.cluster.local:8443,nifi-0.nifi-headless.nifi-vn.svc.cluster.local:8443
+  - NIFI_TLS_EXTRA_SANS=dns:nifi.nifi-vn.svc,dns:nifi.nifi-vn.svc.cluster.local,dns:nifi-0.nifi-headless.nifi-vn.svc.cluster.local
+# Vault Kubernetes-auth role, secret paths and Registry Client settings for the sync jobs.
+- name: nifi-sync-env
+  literals:
+  - VAULT_ADDR=http://vault.vault-vn.svc.cluster.local:8200
+  - VAULT_ROLE=nifi-vn
+  - VAULT_PARAMS_PATH=kv/runtime
+  - VAULT_REGISTRY_TOKEN_PATH=kv/gitlab-registry/vn
+  - REGISTRY_CLIENT_NAME=gitlab-main
+  - REGISTRY_BRANCH=main
+  - GITLAB_API_URL=http://gitlab.gitlab.svc.cluster.local/
+  - GITLAB_NAMESPACE=data360
+  - GITLAB_PROJECT=flows-nifi
+  - GITLAB_REPOSITORY_PATH=flows
+patches:
+- target:
+    kind: TLSRoute
+    name: nifi
+  patch: |-
+    - op: replace
+      path: /spec/hostnames/0
+      value: nifi-vn.192.168.102.4.sslip.io

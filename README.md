@@ -4,6 +4,23 @@ Bộ lab thực hành Data 360: xây dựng flow Kafka → Postgres tại stagin
 
 **Bắt đầu ở [docs/GUIDE_VI.md](docs/GUIDE_VI.md).** Tài liệu có đầy đủ thứ tự chạy, cấu hình UI, kiểm tra kết quả, phát hành lần hai, rollback và xử lý lỗi.
 
+**Bản Kubernetes (branch `k8s-deployment`): [docs/GUIDE_K8S_VI.md](docs/GUIDE_K8S_VI.md).** Mỗi service một namespace, NiFi xác thực Vault bằng ServiceAccount + Kubernetes auth role (không còn token tĩnh), NiFi kết nối GitLab bằng Project Access Token, giao diện truy cập từ LAN qua Gateway API. Kết quả kiểm thử thực tế: [docs/VALIDATION_K8S.md](docs/VALIDATION_K8S.md).
+
+| Bản K8s | URL (LAN) |
+|---|---|
+| NiFi staging / VN / INDO | `https://nifi-stag\|nifi-vn\|nifi-indo.192.168.102.4.sslip.io:31443/nifi/` |
+| GitLab | `http://gitlab.192.168.102.4.sslip.io:31080` |
+| Vault VN / INDO | `http://vault-vn\|vault-indo.192.168.102.4.sslip.io:31080/ui/` |
+
+```bash
+bash k8s/scripts/deploy.sh                 # image, Secret từ .env, kubectl apply -k k8s
+python3 k8s/scripts/vault-init.py          # init/unseal, KV, Kubernetes auth + role
+python3 k8s/scripts/gitlab-bootstrap.py    # project, branch, protect main, Project Access Token -> Vault
+bash k8s/scripts/nifi-sync.sh params all   # Vault (ServiceAccount) -> shared-runtime
+bash k8s/scripts/nifi-sync.sh registry all # PrAT -> Registry Client
+python3 k8s/scripts/check-k8s.py           # kiểm tra sẵn sàng
+```
+
 Máy lab `192.168.102.4`: xem [thông tin truy cập và điểm bắt đầu thực hành](docs/DEPLOYMENT_LAB.md).
 
 Truy cập nhanh trong workspace: [LAB_ACCESS.local.md](LAB_ACCESS.local.md) tổng hợp URL,
@@ -60,5 +77,11 @@ NiFi cần password tối thiểu 12 ký tự, nên không dùng `admin/admin`. 
 | docs/GUIDE_VI.md | Full walkthrough |
 | docs/CASES.md | Kịch bản thực hành và tiêu chí đạt |
 | docs/VALIDATION.md | Những gì đã kiểm tra và chưa chạy thực tế |
+| k8s/ | Manifest Kustomize: namespaces, gateway, kafka, postgres, vault, gitlab, nifi (base + overlay stag/vn/indo) |
+| k8s/nifi/base/nifi_k8s_sync.py | Job trong cụm: Vault (ServiceAccount) → `shared-runtime` và PrAT → Registry Client |
+| k8s/scripts/ | deploy, vault-init, gitlab-bootstrap, nifi-sync, gitlab-token, produce/query, check-k8s |
+| k8s/tests/e2e_lab.py | Kiểm thử end-to-end bản K8s qua API (staging → GitLab → VN/INDO, v2, rollback, Parameter Provider) |
+| tests/test_k8s_manifests.py | Kiểm tra tĩnh manifest + logic sync (mock) |
+| docs/GUIDE_K8S_VI.md, docs/VALIDATION_K8S.md | Hướng dẫn và kết quả kiểm thử bản Kubernetes |
 
 Không commit cả thư mục triển khai vào repo snapshot; `.env`, `.private`, backup chứa cấu hình/secret local. Repo có sẵn chỉ cần bổ sung thư mục `flows/shared/.keep` và script kiểm tra nếu muốn.

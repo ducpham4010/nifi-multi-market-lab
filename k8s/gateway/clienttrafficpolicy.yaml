@@ -1,0 +1,14 @@
+# GitLab encodes namespaces and file paths as %2F (e.g. /api/v4/projects/data360%2Fflows-nifi).
+# Envoy Gateway's default UnescapeAndRedirect would rewrite them and break the API/UI.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: lab-keep-encoded-paths
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: lab
+  path:
+    escapedSlashesAction: KeepUnchanged
+    disableMergeSlashes: true

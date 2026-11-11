@@ -1,0 +1,106 @@
+# Single KRaft broker+controller. Clients inside the cluster use
+# kafka.<namespace>.svc.cluster.local:9092; LAN clients use the EXTERNAL
+# listener published as a NodePort (set per overlay).
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  labels:
+    app.kubernetes.io/name: kafka
+spec:
+  serviceName: kafka-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kafka
+        app.kubernetes.io/part-of: nifi-market-lab
+    spec:
+      # Service links would inject KAFKA_* variables that the image turns into broker properties.
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: kafka
+        image: apache/kafka:3.9.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: internal
+          containerPort: 9092
+        - name: controller
+          containerPort: 9093
+        - name: external
+          containerPort: 9094
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: EXTERNAL_ADVERTISED_ADDRESS
+          value: "set-by-overlay:0"
+        - name: CLUSTER_ID
+          value: set-by-overlay
+        - name: KAFKA_NODE_ID
+          value: "1"
+        - name: KAFKA_PROCESS_ROLES
+          value: broker,controller
+        - name: KAFKA_LISTENERS
+          value: INTERNAL://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: INTERNAL://$(POD_NAME).kafka-headless.$(POD_NAMESPACE).svc.cluster.local:9092,EXTERNAL://$(EXTERNAL_ADVERTISED_ADDRESS)
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+        - name: KAFKA_CONTROLLER_LISTENER_NAMES
+          value: CONTROLLER
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: INTERNAL
+        - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+          value: 1@localhost:9093
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+          value: "1"
+        - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
+          value: "0"
+        - name: KAFKA_LOG_DIRS
+          value: /var/lib/kafka/data
+        - name: KAFKA_HEAP_OPTS
+          value: -Xms384m -Xmx384m
+        readinessProbe:
+          tcpSocket:
+            port: internal
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: internal
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          failureThreshold: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 640Mi
+          limits:
+            memory: 1Gi
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/kafka/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ReadWriteOnce]
+      resources:
+        requests:
+          storage: 5Gi

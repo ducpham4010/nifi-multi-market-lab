@@ -1,5 +1,7 @@
 # Hạ tầng sẵn có trên máy lab
 
+> **Từ 2026-11-11 lab chạy trên Kubernetes** (branch `k8s-deployment`), xem mục cuối tài liệu này và [GUIDE_K8S_VI.md](GUIDE_K8S_VI.md). Stack Docker Compose mô tả ngay dưới đây đã dừng; volume Docker và `.private/vault-*-init.json` của nó vẫn được giữ.
+
 Triển khai ngày 2026-11-10 trên RHEL 9.8, IP `192.168.102.4`.
 Thư mục trên máy lab: `~/github/nifi-multi-market-lab`.
 Compose project: `nifi-market-lab`.
@@ -72,3 +74,28 @@ python3 scripts/check-infra.py
 
 Giữ nguyên `.env`, `.private/` và named volumes. `.private/` chứa keys/token;
 không đưa vào Git. Khởi tạo Vault có thể chạy lại mà không ghi đè secret đã có.
+
+## Bản Kubernetes (đang chạy)
+
+Triển khai ngày 2026-11-11 trên cụm kubeadm `lab-k8s` của cùng máy. Mỗi service một namespace; mọi object có nhãn `app.kubernetes.io/part-of=nifi-market-lab`.
+
+| Dịch vụ | URL từ LAN | Đăng nhập |
+|---|---|---|
+| NiFi staging | https://nifi-stag.192.168.102.4.sslip.io:31443/nifi/ | `admin` / `NIFI_PASSWORD` |
+| NiFi VN | https://nifi-vn.192.168.102.4.sslip.io:31443/nifi/ | như trên |
+| NiFi INDO | https://nifi-indo.192.168.102.4.sslip.io:31443/nifi/ | như trên |
+| GitLab | http://gitlab.192.168.102.4.sslip.io:31080 | `root` / `GITLAB_PASSWORD` |
+| Vault VN / INDO | http://vault-vn.192.168.102.4.sslip.io:31080/ui/ · http://vault-indo.192.168.102.4.sslip.io:31080/ui/ | root token trong `.private/k8s/vault-<market>-init.json` |
+
+- NiFi đọc Vault bằng ServiceAccount `nifi` của namespace mình (role `nifi-stag`, `nifi-vn`, `nifi-indo`); không còn token `nifi-*-lab-token`.
+- NiFi kết nối GitLab bằng Project Access Token `nifi-staging-writer` / `nifi-vn-reader` / `nifi-indo-reader`, lưu trong Vault `kv/gitlab-registry/*`; không còn user `nifi-writer` / `nifi-reader` và PAT.
+- Đã chạy e2e: flow của lần kiểm thử cuối đang chạy trên cả ba NiFi; project GitLab có MR !1 (v1), !2 (v2). Kết quả: [VALIDATION_K8S.md](VALIDATION_K8S.md).
+- Hai container Docker `doris-fe`, `doris-be` đã được dừng để đủ RAM; bật lại: `docker start doris-fe doris-be`.
+
+Kiểm tra / sau khi restart:
+
+```bash
+cd ~/github/nifi-multi-market-lab
+python3 k8s/scripts/vault-init.py --unseal-only   # Vault luôn sealed sau khi pod restart
+python3 k8s/scripts/check-k8s.py
+```

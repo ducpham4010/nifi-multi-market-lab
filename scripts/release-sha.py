@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Print path-scoped commits visible on main. No mutation; requires read_api PAT."""
+"""Print path-scoped commits visible on main. No mutation; requires a read_api token.
+
+Compose lab: GitLab at http://HOST_IP:18080. Kubernetes lab: set
+GITLAB_URL=http://gitlab.HOST_IP.sslip.io:31080 and use the reader
+Project Access Token (k8s/scripts/gitlab-token.sh vn prints it).
+"""
 
 import os, json, urllib.parse, urllib.request, sys
 
@@ -10,7 +15,8 @@ project = urllib.parse.quote(
 )
 path = sys.argv[1] if len(sys.argv) > 1 else "flows/shared/kafka-to-postgres.json"
 query = urllib.parse.urlencode({"ref_name": "main", "path": path, "per_page": 10})
-url = f"http://{ip}:18080/api/v4/projects/{project}/repository/commits?{query}"
+base = os.environ.get("GITLAB_URL", f"http://{ip}:18080").rstrip("/")
+url = f"{base}/api/v4/projects/{project}/repository/commits?{query}"
 request = urllib.request.Request(url, headers={"PRIVATE-TOKEN": token})
 with urllib.request.urlopen(request, timeout=20) as r:
     commits = json.load(r)

@@ -1,0 +1,154 @@
+# Single-node NiFi 2.6.0 (custom image: PostgreSQL JDBC driver + TLS SAN wrapper).
+# Per-instance values come from ConfigMap nifi-env (overlay); credentials from
+# Secret nifi-admin (created from .env by k8s/scripts/deploy.sh).
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nifi
+  labels:
+    app.kubernetes.io/name: nifi
+spec:
+  serviceName: nifi-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nifi
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nifi
+        app.kubernetes.io/part-of: nifi-market-lab
+    spec:
+      serviceAccountName: nifi
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+      # PVCs start empty (unlike Docker named volumes): seed conf/ from the image once.
+      - name: init-dirs
+        image: nifi-market-lab
+        imagePullPolicy: IfNotPresent
+        command: [/bin/bash, -ec]
+        args:
+        - |
+          for d in conf state database_repository flowfile_repository content_repository provenance_repository; do
+            mkdir -p "/data/$d"
+          done
+          if [ ! -f /data/conf/nifi.properties ]; then
+            cp -a /opt/nifi/nifi-current/conf/. /data/conf/
+            echo "Seeded conf/ from image"
+          fi
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+      containers:
+      - name: nifi
+        image: nifi-market-lab
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: https
+          containerPort: 8443
+        envFrom:
+        - configMapRef:
+            name: nifi-env
+        env:
+        - name: NIFI_WEB_HTTPS_HOST
+          value: 0.0.0.0
+        - name: NIFI_WEB_HTTPS_PORT
+          value: "8443"
+        # Loopback-only management port; each pod has its own network namespace.
+        - name: NIFI_MANAGEMENT_PORT
+          value: "52020"
+        - name: NIFI_CLUSTER_IS_NODE
+          value: "false"
+        - name: NIFI_JVM_HEAP_INIT
+          value: 256m
+        - name: NIFI_JVM_HEAP_MAX
+          value: 1g
+        - name: SINGLE_USER_CREDENTIALS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: nifi-admin
+              key: username
+        - name: SINGLE_USER_CREDENTIALS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nifi-admin
+              key: password
+        - name: NIFI_SENSITIVE_PROPS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nifi-admin
+              key: sensitive-props-key
+        startupProbe:
+          exec:
+            command: [curl, -skf, -o, /dev/null, https://localhost:8443/nifi/]
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 60
+        readinessProbe:
+          exec:
+            command: [curl, -skf, -o, /dev/null, https://localhost:8443/nifi/]
+          periodSeconds: 20
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command: [curl, -skf, -o, /dev/null, https://localhost:8443/nifi/]
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 6
+        resources:
+          requests:
+            cpu: 250m
+            memory: 1Gi
+          limits:
+            memory: 2Gi
+        volumeMounts:
+        - name: data
+          mountPath: /opt/nifi/nifi-current/conf
+          subPath: conf
+        - name: data
+          mountPath: /opt/nifi/nifi-current/state
+          subPath: state
+        - name: data
+          mountPath: /opt/nifi/nifi-current/database_repository
+          subPath: database_repository
+        - name: data
+          mountPath: /opt/nifi/nifi-current/flowfile_repository
+          subPath: flowfile_repository
+        - name: data
+          mountPath: /opt/nifi/nifi-current/content_repository
+          subPath: content_repository
+        - name: data
+          mountPath: /opt/nifi/nifi-current/provenance_repository
+          subPath: provenance_repository
+        # Used by StandardHashiCorpVaultClientService (Vault Authentication = KUBERNETES).
+        - name: vault-token
+          mountPath: /var/run/secrets/vault
+          readOnly: true
+      volumes:
+      - name: vault-token
+        projected:
+          sources:
+          - serviceAccountToken:
+              audience: vault
+              expirationSeconds: 3600
+              path: token
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ReadWriteOnce]
+      resources:
+        requests:
+          storage: 10Gi

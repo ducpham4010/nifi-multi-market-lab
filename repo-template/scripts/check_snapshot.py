@@ -34,7 +34,8 @@ def walk(obj, path):
                         continue
                     text = str(val)
                     if re.search(
-                        r"\b(?:\d{1,3}\.){3}\d{1,3}\b|jdbc:|https?://|nifi-(vn|indo)-lab-token",
+                        r"\b(?:\d{1,3}\.){3}\d{1,3}\b|jdbc:|https?://|nifi-(vn|indo)-lab-token"
+                        r"|\.svc(?:\.cluster\.local)?\b|glpat-",
                         text,
                     ):
                         errors.append(

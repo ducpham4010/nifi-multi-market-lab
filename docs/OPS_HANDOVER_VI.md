@@ -62,7 +62,7 @@ Tách danh tính workload khỏi tài khoản cá nhân người vận hành. Đ
 | `nifi-indo-reader` | Registry Client INDO | Reporter | `read_api` | Đọc branch/commit/snapshot; không ghi repo |
 | Nhóm review/release | GitLab UI | Role đủ review/merge theo phân công | Không dùng token workload để duyệt MR | Merge main theo quy trình |
 
-Ops có thể cấp **project access token** nếu phiên bản, license và chính sách cho phép; hoặc PAT của tài khoản kỹ thuật chỉ có membership cần thiết. Không yêu cầu PAT của admin. Role và scope cùng quyết định quyền token; scope `api` không tự giới hạn token chỉ được ghi một branch. Branch protection thực hiện phần giới hạn đó. [GitLab: project access tokens](https://docs.gitlab.com/user/project/settings/project_access_tokens/).
+Ops có thể cấp **project access token** nếu phiên bản, license và chính sách cho phép (đã kiểm chứng trên GitLab CE 18.2.1 self-managed trong bản K8s: NiFi 2.6 GitLabFlowRegistryClient đọc/ghi bình thường, commit mang tên bot của token); hoặc PAT của tài khoản kỹ thuật chỉ có membership cần thiết. Không yêu cầu PAT của admin. Role và scope cùng quyết định quyền token; scope `api` không tự giới hạn token chỉ được ghi một branch. Branch protection thực hiện phần giới hạn đó. [GitLab: project access tokens](https://docs.gitlab.com/user/project/settings/project_access_tokens/).
 
 Registry Client sử dụng REST API: `read_repository` đơn thuần không thay cho `read_api`. Password đăng nhập web và SSH deploy key cũng không thay cho trường Access Token của cấu hình hiện tại. [GitLab: token scopes](https://docs.gitlab.com/security/tokens/access_token_scopes/).
 
@@ -151,6 +151,19 @@ Native provider cần list tùy cấu trúc đường dẫn nó duyệt. Ops b�
 KV v2 dùng đường API/policy `data/` và `metadata/` khác KV v1. Ops phải cung cấp policy đúng engine; không copy nguyên ví dụ KV v1 sang KV v2. [HashiCorp: quyền theo đường dẫn KV](https://support.hashicorp.com/hc/en-us/articles/6572815701907-How-to-give-access-for-specific-path-inside-KV-secret).
 
 Bàn giao auth method, auth mount, role và cách lấy credential ban đầu. Lab dùng Token; nếu chuyển AppRole hoặc cơ chế khác, phải kiểm tra hỗ trợ và cấu hình trên component NiFi 2.6 đang dùng. RoleID/SecretID không thể được dán thay Vault token vào bridge hiện tại.
+
+**Khi NiFi chạy trên Kubernetes** (bản `k8s/`, đã kiểm chứng trong lab): dùng Vault **Kubernetes auth**, không cấp token tĩnh. Ops bàn giao auth mount (`kubernetes`), tên role theo instance và audience; Dev/Platform bảo đảm mỗi NiFi chạy bằng ServiceAccount riêng trong namespace riêng và mount token projected đúng audience.
+
+| Hạng mục Ops cấu hình | Giá trị trong lab |
+|---|---|
+| Auth mount / `kubernetes_host` | `kubernetes` / `https://kubernetes.default.svc.cluster.local` (Vault trong cụm dùng token SA của chính nó để gọi TokenReview, cần ClusterRoleBinding `system:auth-delegator`) |
+| Role staging / VN / INDO | `nifi-stag` / `nifi-vn` (Vault VN), `nifi-indo` (Vault INDO) |
+| `bound_service_account_names` / `_namespaces` | `nifi` / đúng một namespace: `nifi-stag`, `nifi-vn`, `nifi-indo` |
+| `audience` | `vault` (pod mount `serviceAccountToken` projected với audience này) |
+| TTL | `token_ttl=1h`, `token_max_ttl=4h` |
+| Policy | Chỉ `read` secret của instance + `list` tên trên `kv/`; staging không đọc `kv/runtime` và ngược lại |
+
+NiFi 2.6 dùng được cơ chế này ở hai nơi: Job đồng bộ trong namespace NiFi, và `StandardHashiCorpVaultClientService` với **Vault Authentication = KUBERNETES**, dynamic property `vault.kubernetes.role` và `vault.kubernetes.service-account-token-file`. Chi tiết: [GUIDE_K8S_VI.md](GUIDE_K8S_VI.md) mục 5.
 
 ### 4.4 Vòng đời secret và token
 
@@ -271,6 +284,7 @@ Không chỉ dùng trạng thái Enabled, HTTP UI 200 hay AuditSuccess để ký
 ## 9. Tài liệu liên quan
 
 - [GUIDE_VI.md](GUIDE_VI.md): mục 4 GitLab, mục 5 parameters, mục 6 Registry Client, mục 13 native Vault provider.
+- [GUIDE_K8S_VI.md](GUIDE_K8S_VI.md): bản Kubernetes — Vault Kubernetes auth theo ServiceAccount, Project Access Token lưu trong Vault, Job cấu hình Registry Client (cách 2 của mục 3.4).
 - [NIFI_CONCEPTS_VI.md](NIFI_CONCEPTS_VI.md): giải thích vai trò các thành phần.
 - [GitLab protected branches](https://docs.gitlab.com/user/project/repository/branches/protected/): quyền push/merge và các rule bảo vệ branch.
 - [Vault KV v1](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v1) và [KV v2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2): khác biệt engine để Ops và Dev thống nhất trước triển khai.

@@ -128,6 +128,8 @@ with tempfile.TemporaryDirectory() as temp:
             x["parameter"]["name"] for x in params if x["parameter"]["sensitive"]
         ] == ["db.password"]
         assert updates[0]["revision"] == {"version": 0}
+        # NiFi 2.6 rejects update requests without the entity-level id.
+        assert updates[0]["id"] == updates[0]["component"]["id"]
     print(
         "PASS mocked HTTP: Vault initial seed + repeat idempotence; NiFi context create + async update; password sensitivity"
     )

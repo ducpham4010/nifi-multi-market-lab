@@ -3,9 +3,12 @@
 
 No flow/context mutations. Authentication cookies and JWTs stay in memory.
 Run from a client or the lab host; self-signed TLS is accepted for this lab.
+Kubernetes lab: NIFI_GATEWAY_PORT=31443 python3 scripts/check-nifi-sessions.py
+(same hostnames, one Gateway port for all three NiFi).
 """
 
 import base64
+import os
 import http.cookiejar
 import json
 import pathlib
@@ -24,7 +27,11 @@ IP = ENV["HOST_IP"]
 
 def main():
     targets = [
-        (market, ENV.get(key) or f"nifi-{market}.{IP}.sslip.io", port)
+        (
+            market,
+            ENV.get(key) or f"nifi-{market}.{IP}.sslip.io",
+            int(os.environ.get("NIFI_GATEWAY_PORT", port)),
+        )
         for market, key, port in [
             ("stag", "NIFI_STAG_HOST", 18443),
             ("vn", "NIFI_VN_HOST", 28443),

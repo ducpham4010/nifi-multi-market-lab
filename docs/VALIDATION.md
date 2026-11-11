@@ -78,3 +78,7 @@ firewall/SELinux ở chế độ enforcing. Các bước thực hành có accept
 CASES.md.
 
 Trước sử dụng ngoài lab cần có test integration, đối chiếu phiên bản, image security updates, authentication/TLS và thiết kế HA riêng. Bản này dùng single-node để tập trung vào flow promotion.
+
+## Bổ sung 2026-11-11: phát hiện khi triển khai bản Kubernetes
+
+- Nhánh **cập nhật** context đã có của `scripts/sync-params.py` gửi update request thiếu `id` cấp entity; NiFi 2.6 trả `Failed to update Parameter Context ... The componentId must be specified`. Trên lab Compose chỉ nhánh tạo mới từng chạy thật nên lỗi không lộ ra. Đã sửa (thêm `id`) và thêm kiểm tra trong `tests/test_scripts.py`. Bản sửa đã chạy thật trên bản Kubernetes (cùng logic trong `k8s/nifi/base/nifi_k8s_sync.py`), chưa chạy lại trên stack Compose vì stack này đã dừng. Chi tiết: [VALIDATION_K8S.md](VALIDATION_K8S.md).

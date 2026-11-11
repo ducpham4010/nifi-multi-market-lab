@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+labels:
+- pairs:
+    app.kubernetes.io/part-of: nifi-market-lab
+resources:
+- serviceaccount.yaml
+- services.yaml
+- statefulset.yaml
+- sync-cronjobs.yaml
+- tlsroute.yaml
+configMapGenerator:
+- name: nifi-sync-script
+  files:
+  - nifi_k8s_sync.py
+images:
+- name: nifi-market-lab
+  newName: localhost:31102/nifi-market-lab/nifi
+  newTag: 2.6.0-lab1

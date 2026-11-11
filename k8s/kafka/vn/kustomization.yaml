@@ -1,0 +1,38 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kafka-vn
+resources:
+- ../base
+patches:
+- target:
+    kind: StatefulSet
+    name: kafka
+  patch: |-
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: kafka
+    spec:
+      template:
+        spec:
+          containers:
+          - name: kafka
+            env:
+            - name: CLUSTER_ID
+              value: MkU3OEVBNTcwNTJENDM2Qk
+            - name: EXTERNAL_ADVERTISED_ADDRESS
+              value: 192.168.102.4:31092
+- target:
+    kind: Service
+    name: kafka-external
+  patch: |-
+    - op: add
+      path: /spec/ports/0/nodePort
+      value: 31092
+- target:
+    kind: Job
+    name: kafka-init-topics
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/env/0/value
+      value: trips trips-staging

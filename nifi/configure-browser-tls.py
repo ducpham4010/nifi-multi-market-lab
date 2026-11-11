@@ -3,6 +3,11 @@
 
 Keep existing store passwords, other trust anchors and all flow/authentication
 settings. Reuse certificates that already match; keytool passwords use env vars.
+
+Optional NIFI_TLS_EXTRA_SANS adds comma-separated ``dns:<name>``/``ip:<addr>``
+entries, e.g. Kubernetes Service DNS names used by in-cluster API clients.
+Jetty checks SNI against the certificate, so every hostname used to reach
+NiFi over TLS must be listed.
 """
 
 import ipaddress
@@ -24,6 +29,19 @@ def main():
             os.environ["NIFI_WEB_PROXY_HOST"].split(",")[0].rsplit(":", 1)[0]
         )
     )
+    extra_dns, extra_ip = [], []
+    for entry in filter(
+        None, (e.strip() for e in os.environ.get("NIFI_TLS_EXTRA_SANS", "").split(","))
+    ):
+        kind, _, value = entry.partition(":")
+        if kind.lower() == "dns" and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9.-]*", value):
+            extra_dns.append(value)
+        elif kind.lower() == "ip":
+            extra_ip.append(str(ipaddress.ip_address(value)))
+        else:
+            raise RuntimeError(f"Invalid NIFI_TLS_EXTRA_SANS entry: {entry}")
+    dns_names = list(dict.fromkeys([host, "localhost", *extra_dns]))
+    ip_names = list(dict.fromkeys([ip, *extra_ip]))
     home = pathlib.Path(os.environ.get("NIFI_HOME", "/opt/nifi/nifi-current"))
     properties = home / "conf/nifi.properties"
     lines = properties.read_text().splitlines()
@@ -96,7 +114,10 @@ def main():
                 for line in san.splitlines()[1:]
                 for name in line.split(",")
             }
-            if f"DNS:{host}" in names and f"IP Address:{ip}" in names:
+            wanted = {f"DNS:{n}" for n in dns_names} | {
+                f"IP Address:{n}" for n in ip_names
+            }
+            if wanted <= names:
                 print(f"Lab TLS certificate already covers {host} and {ip}")
                 return
 
@@ -126,7 +147,8 @@ def main():
             "-dname",
             f"CN={host}",
             "-ext",
-            f"SAN=dns:{host},dns:localhost,ip:{ip}",
+            "SAN="
+            + ",".join([f"dns:{n}" for n in dns_names] + [f"ip:{n}" for n in ip_names]),
             "-storetype",
             "PKCS12",
             "-keystore",

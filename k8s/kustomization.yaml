@@ -1,0 +1,16 @@
+# Whole lab: kubectl apply -k k8s/  (run k8s/scripts/deploy.sh for secrets + order)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- namespaces
+- gateway
+- kafka/vn
+- kafka/indo
+- postgres/vn
+- postgres/indo
+- vault/vn
+- vault/indo
+- gitlab
+- nifi/stag
+- nifi/vn
+- nifi/indo

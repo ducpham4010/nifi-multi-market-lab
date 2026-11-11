@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: postgres-indo
+resources:
+- ../base
+patches:
+- target:
+    kind: Service
+    name: postgres-external
+  patch: |-
+    - op: add
+      path: /spec/ports/0/nodePort
+      value: 32432

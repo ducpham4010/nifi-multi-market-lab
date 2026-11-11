@@ -111,6 +111,8 @@ result = call(
     f"/parameter-contexts/{ident}/update-requests",
     "POST",
     {
+        # NiFi 2.6 ParameterUpdateManager builds the revision from this entity-level id.
+        "id": ident,
         "revision": current["revision"],
         "component": {"id": ident, "name": "shared-runtime", "parameters": params},
     },

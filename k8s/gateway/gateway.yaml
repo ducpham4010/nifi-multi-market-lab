@@ -1,0 +1,42 @@
+# Hostnames use sslip.io so every LAN client resolves them to the node IP
+# without editing DNS: <name>.192.168.102.4.sslip.io -> 192.168.102.4.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: lab
+spec:
+  gatewayClassName: eg-lab
+  infrastructure:
+    parametersRef:
+      group: gateway.envoyproxy.io
+      kind: EnvoyProxy
+      name: lab-proxy
+  listeners:
+  # GitLab and Vault UIs (plain HTTP, as in the Compose lab)
+  - name: http
+    protocol: HTTP
+    port: 80
+    hostname: "*.192.168.102.4.sslip.io"
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            nifi-market-lab/gateway-access: "true"
+  # NiFi keeps its own TLS: Envoy routes by SNI and does not terminate.
+  - name: nifi-tls
+    protocol: TLS
+    port: 443
+    hostname: "*.192.168.102.4.sslip.io"
+    tls:
+      mode: Passthrough
+    allowedRoutes:
+      kinds:
+      - kind: TLSRoute
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            nifi-market-lab/gateway-access: "true"

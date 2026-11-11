@@ -1,0 +1,16 @@
+# SNI routing through the shared Gateway; hostname is set by each overlay.
+apiVersion: gateway.networking.k8s.io/v1
+kind: TLSRoute
+metadata:
+  name: nifi
+spec:
+  parentRefs:
+  - name: lab
+    namespace: lab-gateway
+    sectionName: nifi-tls
+  hostnames:
+  - set-by-overlay.invalid
+  rules:
+  - backendRefs:
+    - name: nifi
+      port: 8443

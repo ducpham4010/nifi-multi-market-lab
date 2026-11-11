@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lab-gateway
+  annotations:
+    nifi-market-lab/description: "Gateway (Envoy) for LAN access to lab UIs"
+  labels:
+    nifi-market-lab/gateway-access: "false"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitlab
+  annotations:
+    nifi-market-lab/description: "GitLab CE: flow snapshot repository"
+  labels:
+    nifi-market-lab/gateway-access: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vault-vn
+  annotations:
+    nifi-market-lab/description: "Vault VN: staging + VN runtime secrets"
+  labels:
+    nifi-market-lab/gateway-access: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vault-indo
+  annotations:
+    nifi-market-lab/description: "Vault INDO: INDO runtime secrets"
+  labels:
+    nifi-market-lab/gateway-access: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kafka-vn
+  annotations:
+    nifi-market-lab/description: "Kafka VN (KRaft, single broker)"
+  labels:
+    nifi-market-lab/gateway-access: "false"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kafka-indo
+  annotations:
+    nifi-market-lab/description: "Kafka INDO (KRaft, single broker)"
+  labels:
+    nifi-market-lab/gateway-access: "false"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres-vn
+  annotations:
+    nifi-market-lab/description: "PostgreSQL VN"
+  labels:
+    nifi-market-lab/gateway-access: "false"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres-indo
+  annotations:
+    nifi-market-lab/description: "PostgreSQL INDO"
+  labels:
+    nifi-market-lab/gateway-access: "false"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nifi-stag
+  annotations:
+    nifi-market-lab/description: "NiFi staging (flow authoring, writes GitLab staging)"
+  labels:
+    nifi-market-lab/gateway-access: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nifi-vn
+  annotations:
+    nifi-market-lab/description: "NiFi VN market runtime"
+  labels:
+    nifi-market-lab/gateway-access: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nifi-indo
+  annotations:
+    nifi-market-lab/description: "NiFi INDO market runtime"
+  labels:
+    nifi-market-lab/gateway-access: "true"

@@ -1,0 +1,12 @@
+# Shared entry point for LAN clients. No LoadBalancer on this bare-metal node,
+# so Envoy is published as NodePort: 31080 (HTTP) and 31443 (TLS passthrough).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: lab-gateway
+labels:
+- pairs:
+    app.kubernetes.io/part-of: nifi-market-lab
+resources:
+- envoyproxy.yaml
+- gateway.yaml
+- clienttrafficpolicy.yaml

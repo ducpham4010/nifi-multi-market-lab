@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+labels:
+- pairs:
+    app.kubernetes.io/part-of: nifi-market-lab
+resources:
+- statefulset.yaml
+- services.yaml
+# Copy of sql/init.sql (kustomize cannot load files outside this directory);
+# tests/test_k8s_manifests.py keeps both identical.
+configMapGenerator:
+- name: postgres-init
+  files:
+  - 01-init.sql=init.sql

@@ -151,6 +151,71 @@ class BrowserTlsIntegrationTest(unittest.TestCase):
             configure()
             self.assertEqual(fingerprint(), after)
 
+    def test_kubernetes_service_names_in_san(self):
+        """NIFI_TLS_EXTRA_SANS adds in-cluster Service DNS names (Jetty checks SNI)."""
+        with tempfile.TemporaryDirectory() as directory:
+            home = pathlib.Path(directory)
+            (home / "conf").mkdir()
+            (home / "conf/nifi.properties").write_text("nifi.web.https.host=0.0.0.0\n")
+            env = {
+                **os.environ,
+                "NIFI_HOME": str(home),
+                "NIFI_BROWSER_HOST": "nifi-vn.192.168.102.4.sslip.io",
+                "NIFI_WEB_PROXY_HOST": "192.168.102.4:31443,nifi-vn.192.168.102.4.sslip.io:31443",
+                "NIFI_TLS_EXTRA_SANS": "dns:nifi.nifi-vn.svc,dns:nifi.nifi-vn.svc.cluster.local",
+            }
+
+            def configure():
+                return subprocess.run(
+                    [sys.executable, str(SCRIPT)],
+                    env=env,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout
+
+            configure()
+            values = dict(
+                line.split("=", 1)
+                for line in (home / "conf/nifi.properties").read_text().splitlines()
+                if "=" in line
+            )
+            pem = subprocess.run(
+                [
+                    "openssl",
+                    "pkcs12",
+                    "-in",
+                    str(home / "conf/keystore.p12"),
+                    "-clcerts",
+                    "-nokeys",
+                    "-passin",
+                    "env:TEST_PASS",
+                ],
+                env={**env, "TEST_PASS": values["nifi.security.keystorePasswd"]},
+                capture_output=True,
+                check=True,
+            ).stdout
+            san = subprocess.run(
+                ["openssl", "x509", "-noout", "-ext", "subjectAltName"],
+                input=pem,
+                capture_output=True,
+                check=True,
+            ).stdout.decode()
+            for name in (
+                "DNS:nifi-vn.192.168.102.4.sslip.io",
+                "DNS:localhost",
+                "DNS:nifi.nifi-vn.svc",
+                "DNS:nifi.nifi-vn.svc.cluster.local",
+                "IP Address:192.168.102.4",
+            ):
+                self.assertIn(name, san)
+            self.assertIn(
+                "already covers", configure(), "repeat start must reuse the certificate"
+            )
+            env["NIFI_TLS_EXTRA_SANS"] = "bad-entry"
+            with self.assertRaises(subprocess.CalledProcessError):
+                configure()
+
 
 if __name__ == "__main__":
     unittest.main()
