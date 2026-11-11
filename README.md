@@ -14,6 +14,8 @@ Ba tab cùng IP khác cổng sẽ ghi đè cookie đăng nhập của nhau; phi�
 
 **Mới học NiFi?** Đọc [Hiểu NiFi từ những thành phần đầu tiên](docs/NIFI_CONCEPTS_VI.md) — giải thích các khái niệm, cách phối hợp và 7 sơ đồ minh họa. Có [bản PDF để đọc hoặc in](output/pdf/NIFI_CONCEPTS_VI.pdf).
 
+GitLab/Vault do đội Ops quản lý: dùng [checklist yêu cầu và bàn giao Ops → Dev](docs/OPS_HANDOVER_VI.md).
+
 ## Phạm vi thiết kế
 
 - 2 Kafka độc lập, mỗi Kafka 1 broker KRaft; 2 Postgres độc lập; 2 Vault persistent độc lập.
