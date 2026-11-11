@@ -68,7 +68,7 @@ Lần chạy cuối `run=1111162450`, 16:24:54–16:25:51 (57 giây), **exit 0, 
 
 Token Maintainer `lab-release-maintainer` (chỉ để merge tự động) đã bị thu hồi sau lần chạy (`gitlab-bootstrap.py --revoke-release-token`).
 
-Trạng thái để lại sau kiểm thử: ba NiFi đang chạy flow của lần e2e cuối (staging v2, VN M1 sau rollback, INDO M1), project GitLab có MR !1, !2 đã merge, NiFi VN có `vault-preview`. Muốn tự thực hành từ canvas rỗng: mục 8 của GUIDE_K8S_VI (`--reset-only`, `--recreate-project`).
+Trạng thái để lại sau kiểm thử: ba NiFi đang chạy flow của lần e2e cuối (staging v2, VN M1 sau rollback, INDO M1), project GitLab có MR !1, !2 đã merge, NiFi VN có `vault-preview`. Muốn tự thực hành từ canvas rỗng: mục 3.7 của GUIDE_K8S_VI (`--reset-only`, `--recreate-project`).
 
 ## 4. Restart và bền vững dữ liệu
 
@@ -106,5 +106,5 @@ Lệnh trong tài liệu đã chạy thử: `git clone` qua Gateway với userna
 - Single-node: không HA cho NiFi, Kafka, Vault, GitLab; không kiểm tra node failure hay PodDisruptionBudget.
 - Flannel không thực thi NetworkPolicy, nên cô lập mạng giữa namespace chưa được áp dụng; cô lập hiện ở mức namespace, RBAC/ServiceAccount và Vault policy.
 - GitLab/Vault HTTP, Kafka PLAINTEXT, certificate NiFi tự ký; Job sync bỏ kiểm tra certificate NiFi (có thể bật bằng `NIFI_CA_FILE`).
-- Backup/restore PVC theo mục 9.4 GUIDE_K8S_VI chưa chạy thử phục hồi thực tế.
+- Backup/restore PVC theo mục 12.3–12.4 GUIDE_K8S_VI chưa chạy thử phục hồi thực tế.
 - Token ServiceAccount projected hết hạn sau 1 giờ và được kubelet xoay; chưa chạy dài hạn để quan sát Parameter Provider re-login sau `token_max_ttl` (4 giờ).

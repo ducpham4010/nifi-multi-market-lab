@@ -163,7 +163,7 @@ Bàn giao auth method, auth mount, role và cách lấy credential ban đầu. L
 | TTL | `token_ttl=1h`, `token_max_ttl=4h` |
 | Policy | Chỉ `read` secret của instance + `list` tên trên `kv/`; staging không đọc `kv/runtime` và ngược lại |
 
-NiFi 2.6 dùng được cơ chế này ở hai nơi: Job đồng bộ trong namespace NiFi, và `StandardHashiCorpVaultClientService` với **Vault Authentication = KUBERNETES**, dynamic property `vault.kubernetes.role` và `vault.kubernetes.service-account-token-file`. Chi tiết: [GUIDE_K8S_VI.md](GUIDE_K8S_VI.md) mục 5.
+NiFi 2.6 dùng được cơ chế này ở hai nơi: Job đồng bộ trong namespace NiFi, và `StandardHashiCorpVaultClientService` với **Vault Authentication = KUBERNETES**, dynamic property `vault.kubernetes.role` và `vault.kubernetes.service-account-token-file`. Chi tiết: [GUIDE_K8S_VI.md](GUIDE_K8S_VI.md) mục 5 (Job đồng bộ) và mục 13 (Parameter Provider).
 
 ### 4.4 Vòng đời secret và token
 
