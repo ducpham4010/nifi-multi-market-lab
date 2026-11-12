@@ -86,5 +86,6 @@ NiFi cần password tối thiểu 12 ký tự, nên không dùng `admin/admin`. 
 | k8s/tests/e2e_lab.py | Kiểm thử end-to-end bản K8s qua API (staging → GitLab → VN/INDO, v2, rollback, Parameter Provider) |
 | tests/test_k8s_manifests.py | Kiểm tra tĩnh manifest + logic sync (mock) |
 | docs/GUIDE_K8S_VI.md, docs/VALIDATION_K8S.md | Hướng dẫn và kết quả kiểm thử bản Kubernetes |
+| docs/VAULT_K8S_AUTH_VI.md | Giải thích chi tiết NiFi đăng nhập Vault bằng ServiceAccount: JWT, role, TokenReview, cô lập giữa thị trường |
 
 Không commit cả thư mục triển khai vào repo snapshot; `.env`, `.private`, backup chứa cấu hình/secret local. Repo có sẵn chỉ cần bổ sung thư mục `flows/shared/.keep` và script kiểm tra nếu muốn.

@@ -633,6 +633,8 @@ sequenceDiagram
 | VN | `nifi-vn` | `nifi-vn/nifi` | `kv/runtime`, `kv/preview`, `kv/gitlab-registry/vn` |
 | INDO | `nifi-indo` | `nifi-indo/nifi` | `kv/runtime`, `kv/gitlab-registry/indo` |
 
+Giải thích chi tiết từng mảnh (JWT chứa gì, role được tạo ở đâu, quyền TokenReview của Vault, vì sao NiFi INDO không mượn được role `nifi-vn`): [VAULT_K8S_AUTH_VI.md](VAULT_K8S_AUTH_VI.md).
+
 Mọi policy có thêm quyền `list` trên `kv/`, chỉ để thấy tên secret (Parameter Provider ở mục 13 cần quyền này). Token cũ của bản Compose đọc được toàn bộ `kv/*`. Trên K8s, staging không đọc được `kv/runtime` của VN, và VN không đọc được `kv/staging`.
 
 ### 5.2 Xem secrets, role và policy trên Vault UI
