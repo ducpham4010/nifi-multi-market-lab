@@ -4,6 +4,7 @@ Run: python3 tests/test_k8s_manifests.py   (manifest tests need kubectl + PyYAML
 """
 
 import json
+import os
 import pathlib
 import shutil
 import subprocess
@@ -441,3 +442,83 @@ class SnapshotGuardTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+FAKE_KUBECTL = """#!/usr/bin/env bash
+echo "$*" >> "$KUBECTL_LOG"
+case "$*" in
+  "get ns -l app.kubernetes.io/part-of=nifi-market-lab -o jsonpath="*) printf 'nifi-vn vault-vn' ;;
+  "-n "*" get pvc --no-headers") echo "data-0 Bound pvc-1 1Gi RWO local-path 1d" ;;
+  *) : ;;
+esac
+"""
+
+
+class LifecycleScriptTest(unittest.TestCase):
+    """down.sh / up.sh: confirmation, archive of stale Vault keys, step order."""
+
+    def test_shell_scripts_parse(self):
+        for script in sorted((ROOT / "k8s/scripts").glob("*.sh")):
+            with self.subTest(script=script.name):
+                subprocess.run(["bash", "-n", str(script)], check=True)
+
+    def test_up_runs_bootstrap_steps_in_order(self):
+        text = (ROOT / "k8s/scripts/up.sh").read_text()
+        body = text[text.index("step \"1/6") :]
+        steps = [
+            "deploy.sh",
+            "vault-init.py",
+            "gitlab-bootstrap.py",
+            "nifi-sync.sh\" params all",
+            "nifi-sync.sh\" registry all",
+            "check-k8s.py",
+        ]
+        positions = [body.index(s) for s in steps]
+        self.assertEqual(positions, sorted(positions))
+
+    def run_down(self, *args):
+        directory = pathlib.Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, directory)
+        scripts = directory / "k8s/scripts"
+        scripts.mkdir(parents=True)
+        for name in ("common.sh", "down.sh"):
+            shutil.copy(ROOT / "k8s/scripts" / name, scripts / name)
+        (directory / ".env").write_text("HOST_IP=192.0.2.10\n")
+        keys = directory / ".private/k8s"
+        keys.mkdir(parents=True)
+        (keys / "vault-vn-init.json").write_text("{}")
+        bin_dir = directory / "bin"
+        bin_dir.mkdir()
+        (bin_dir / "kubectl").write_text(FAKE_KUBECTL)
+        (bin_dir / "kubectl").chmod(0o755)
+        log = directory / "kubectl.log"
+        result = subprocess.run(
+            ["bash", str(scripts / "down.sh"), *args],
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            env={
+                **os.environ,
+                "PATH": f"{bin_dir}:{os.environ['PATH']}",
+                "KUBECTL_LOG": str(log),
+            },
+        )
+        calls = log.read_text().splitlines() if log.exists() else []
+        return result, calls, directory
+
+    def test_down_without_confirmation_deletes_nothing(self):
+        result, calls, directory = self.run_down()
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("nifi-vn vault-vn", result.stdout)
+        self.assertIn("pvc nifi-vn/data-0 (1Gi)", result.stdout)
+        self.assertFalse(any(c.startswith("delete") for c in calls), calls)
+        self.assertTrue((directory / ".private/k8s/vault-vn-init.json").exists())
+
+    def test_down_yes_deletes_lab_and_archives_vault_keys(self):
+        result, calls, directory = self.run_down("--yes")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(f"delete -k {directory}/k8s --ignore-not-found --wait=false", calls)
+        self.assertFalse((directory / ".private/k8s").exists())
+        archives = list((directory / ".private").glob("k8s-archive-*/vault-vn-init.json"))
+        self.assertEqual(len(archives), 1)
+        self.assertIn("bash k8s/scripts/up.sh", result.stdout)

@@ -13,6 +13,9 @@ Bộ lab thực hành Data 360: xây dựng flow Kafka → Postgres tại stagin
 | Vault VN / INDO | `http://vault-vn\|vault-indo.192.168.102.4.sslip.io:31080/ui/` |
 
 ```bash
+bash k8s/scripts/up.sh                     # dựng toàn bộ: chạy lần lượt 6 lệnh dưới đây, chạy lại an toàn
+bash k8s/scripts/down.sh                   # gỡ toàn bộ lab K8s và dữ liệu để dựng lại từ đầu (hỏi xác nhận)
+
 bash k8s/scripts/deploy.sh                 # image, Secret từ .env, kubectl apply -k k8s
 python3 k8s/scripts/vault-init.py          # init/unseal, KV, Kubernetes auth + role
 python3 k8s/scripts/gitlab-bootstrap.py    # project, branch, protect main, Project Access Token -> Vault
@@ -79,7 +82,7 @@ NiFi cần password tối thiểu 12 ký tự, nên không dùng `admin/admin`. 
 | docs/VALIDATION.md | Những gì đã kiểm tra và chưa chạy thực tế |
 | k8s/ | Manifest Kustomize: namespaces, gateway, kafka, postgres, vault, gitlab, nifi (base + overlay stag/vn/indo) |
 | k8s/nifi/base/nifi_k8s_sync.py | Job trong cụm: Vault (ServiceAccount) → `shared-runtime` và PrAT → Registry Client |
-| k8s/scripts/ | deploy, vault-init, gitlab-bootstrap, nifi-sync, gitlab-token, produce/query, check-k8s |
+| k8s/scripts/ | up/down, deploy, vault-init, gitlab-bootstrap, nifi-sync, gitlab-token, produce/query, check-k8s |
 | k8s/tests/e2e_lab.py | Kiểm thử end-to-end bản K8s qua API (staging → GitLab → VN/INDO, v2, rollback, Parameter Provider) |
 | tests/test_k8s_manifests.py | Kiểm tra tĩnh manifest + logic sync (mock) |
 | docs/GUIDE_K8S_VI.md, docs/VALIDATION_K8S.md | Hướng dẫn và kết quả kiểm thử bản Kubernetes |

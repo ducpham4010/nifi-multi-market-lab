@@ -44,7 +44,7 @@ Lần kiểm thử tự động cuối **để lại flow đang chạy** trên c
 5. Làm **mục 4** để xem GitLab project và Project Access Token mà script đã tạo. Không tạo user, không tạo Personal Access Token.
 6. Làm **mục 5–6** để kiểm tra parameter và Registry Client.
 7. Làm **mục 7** trên staging, rồi **mục 8–11** để publish, import, rollout và rollback.
-8. Mục 2 và 3.1–3.6 chỉ dùng khi dựng lại trên cụm mới. Trên máy lab hiện tại không cần chạy lại các mục này, và không xóa namespace hay PVC.
+8. Mục 2 và 3.1–3.6 chỉ dùng khi dựng lại trên cụm mới. Trên máy lab hiện tại không cần chạy lại các mục này. Muốn gỡ toàn bộ rồi dựng lại từ đầu trên chính máy lab, làm theo **mục 3.8**.
 
 | Giai đoạn | Ứng dụng/tab cần mở | Kết quả trước khi chuyển bước |
 |---|---|---|
@@ -114,6 +114,8 @@ git branch --show-current     # phải là k8s-deployment
 
 | Lệnh | Việc làm | Dùng ở mục |
 |---|---|---|
+| `bash k8s/scripts/up.sh` | Dựng toàn bộ lab theo đúng thứ tự (3.2–3.6 trong một lệnh); chạy lại an toàn | 3, 3.8 |
+| `bash k8s/scripts/down.sh` | Gỡ toàn bộ lab K8s và **xóa mọi dữ liệu** để dựng lại từ đầu; hỏi xác nhận trước | 3.8, 12.6 |
 | `python3 k8s/scripts/check-k8s.py` | 57 kiểm tra chỉ đọc trên toàn bộ lab | 0.1, 3.6 |
 | `bash k8s/scripts/nifi-sync.sh params stag\|vn\|indo\|all` | Job đọc Vault bằng ServiceAccount rồi apply vào `shared-runtime` | 3.5, 5.4 |
 | `bash k8s/scripts/nifi-sync.sh registry stag\|vn\|indo\|all` | Job đọc Project Access Token trong Vault rồi cấu hình Registry Client | 3.5, 4.5, 6 |
@@ -300,6 +302,8 @@ Bản K8s không cần token Vault nào trong `.env`. Các khóa chỉ bản Com
 
 Thứ tự bắt buộc: deploy hạ tầng → Vault → GitLab → đưa cấu hình vào NiFi → kiểm tra. Mỗi script đều idempotent, chạy lại không tạo bản trùng.
 
+Lệnh `bash k8s/scripts/up.sh` chạy cả mục 3.2–3.6 theo đúng thứ tự đó và dừng ngay ở bước lỗi. Các mục dưới giải thích từng bước, để biết mỗi bước làm gì và kết quả đúng trông thế nào.
+
 ### 3.1 Lấy code và `.env`
 
 ```bash
@@ -463,6 +467,51 @@ python3 k8s/scripts/check-k8s.py
 - Nếu còn thư mục clone cũ `~/github/flows-nifi` từ project trước, xóa nó đi. Lịch sử của project mới khác hoàn toàn.
 
 **Đạt:** ba canvas không còn `MARKET_RUNTIME`; project GitLab chỉ có README và `flows/shared/.keep`; `check-k8s.py` báo `All checks passed`.
+
+### 3.8 Gỡ toàn bộ và dựng lại từ đầu
+
+Mục 3.7 chỉ dọn canvas và project GitLab, còn hạ tầng giữ nguyên. Mục này đưa lab về đúng trạng thái vừa cài: Vault mới, GitLab mới, Kafka và PostgreSQL rỗng, ba NiFi trống. **Mọi dữ liệu của lab bị xóa.**
+
+```bash
+cd ~/github/nifi-multi-market-lab
+bash k8s/scripts/down.sh        # liệt kê những gì sẽ xóa, gõ down để xác nhận
+bash k8s/scripts/up.sh          # dựng lại toàn bộ, tương đương mục 3.2–3.6
+```
+
+`down.sh` làm lần lượt:
+
+1. Liệt kê 11 namespace và 11 PVC sắp bị xóa, rồi yêu cầu gõ `down`. Thêm `--yes` để bỏ bước hỏi (dùng cho tự động hóa).
+2. Chạy `kubectl delete -k k8s`, xóa mọi object của lab, kể cả hai ClusterRoleBinding `vault-<market>-tokenreview`.
+3. Chờ namespace, PV (thư mục dữ liệu local-path) và Envoy proxy của Gateway `lab` biến mất, để NodePort 31080/31443 được trả lại trước khi dựng lại.
+4. Đổi tên `.private/k8s/` thành `.private/k8s-archive-<thời gian>/`. Unseal key và root token trong đó thuộc về Vault vừa bị xóa; nếu để nguyên, `vault-init.py` sẽ từ chối khởi tạo Vault mới. Bản archive chỉ còn giá trị lưu vết, có thể xóa.
+
+| `down.sh` xóa | `down.sh` giữ lại |
+|---|---|
+| 11 namespace của lab và mọi thứ bên trong: StatefulSet, Service, Secret, Job, route | `.env` |
+| 11 PVC: flow NiFi, Kafka, PostgreSQL, Vault, GitLab | Image NiFi trong registry, image đã có trong containerd |
+| ClusterRoleBinding `vault-vn-tokenreview`, `vault-indo-tokenreview` | Envoy Gateway, GatewayClass `eg-lab`, local-path, registry của cụm |
+| Envoy proxy do Gateway `lab` sinh ra | PV và namespace của ứng dụng khác trên cụm |
+| `.private/k8s/` (được chuyển sang thư mục archive, không xóa) | Volume Docker Compose và `.private/vault-*-init.json` của bản Compose |
+
+`up.sh` chạy lần lượt:
+
+1. `deploy.sh`.
+2. Chờ Vault VN, Vault INDO và GitLab trả lời qua Gateway.
+3. `vault-init.py`.
+4. `gitlab-bootstrap.py`.
+5. `nifi-sync.sh params all` rồi `nifi-sync.sh registry all`.
+6. `check-k8s.py`.
+
+Script dừng ngay ở bước lỗi. Sửa xong thì chạy lại `up.sh` từ đầu, vì mọi bước đều idempotent; chạy `up.sh` trên lab đang chạy cũng không mất dữ liệu. Phần lớn thời gian là chờ GitLab khởi động lần đầu (5–15 phút). Thêm `SKIP_BUILD=1` để dùng lại image NiFi đã có trong registry.
+
+Sau khi dựng lại:
+
+- Root token Vault và ba Project Access Token đều là giá trị mới. Cập nhật `LAB_ACCESS.local.md`: root token nằm trong `.private/k8s/vault-<market>-init.json`, token GitLab lấy bằng `bash k8s/scripts/gitlab-token.sh stag|vn|indo`.
+- Certificate tự ký của ba NiFi được tạo lại. Trình duyệt sẽ cảnh báo lại; chấp nhận như mục 0.2 rồi đăng nhập lại.
+- Xóa thư mục clone cũ `~/github/flows-nifi` nếu còn.
+- Bắt đầu bài từ mục 4.
+
+**Đạt:** `up.sh` kết thúc bằng `All checks passed` và dòng `Lab ready in ... min`.
 
 ## 4. Kiểm tra GitLab project và Project Access Token
 
@@ -1398,8 +1447,10 @@ Không trộn `conf/` mới với repository cũ của cùng một NiFi. Thủ t
 ### 12.6 Gỡ lab K8s
 
 ```bash
-kubectl delete -k k8s        # xóa toàn bộ, kể cả namespace và PVC: MẤT DỮ LIỆU
+bash k8s/scripts/down.sh     # xóa toàn bộ, kể cả namespace và PVC: MẤT DỮ LIỆU
 ```
+
+Script hỏi xác nhận, chờ xóa xong và chuyển key Vault cũ vào thư mục archive (mục 3.8). Đừng dùng `kubectl delete -k k8s` trực tiếp: lệnh đó để lại `.private/k8s/`, khiến `vault-init.py` từ chối khởi tạo Vault mới ở lần dựng sau. Dựng lại bằng `bash k8s/scripts/up.sh`.
 
 Docker Compose cũ không bị ảnh hưởng: volume `nifi-market-lab_*` và `.private/vault-*-init.json` vẫn còn. Hai bản dùng cổng khác nhau.
 
@@ -1525,6 +1576,7 @@ Bằng chứng (SHA, event ID, provenance event) được ghi vào `.private/k8s
 | Gateway không `PROGRAMMED` | `kubectl -n lab-gateway describe gateway lab`; kiểm tra pod Envoy trong `envoy-gateway-system` và NodePort 31080/31443 còn trống |
 | GitLab API/UI trả 302 rồi 404 với đường dẫn có `%2F` | Thiếu `ClientTrafficPolicy lab-keep-encoded-paths`; `kubectl -n lab-gateway get clienttrafficpolicy` phải Accepted |
 | Job sync báo `FAILED` với HTTP 503 | Vault sealed → `python3 k8s/scripts/vault-init.py --unseal-only` |
+| `vault-init.py` báo `... exists but Vault <market> is uninitialized` | PVC Vault đã bị xóa nhưng key cũ vẫn nằm trong `.private/k8s/`. Gỡ và dựng lại bằng `down.sh`/`up.sh` (mục 3.8); chỉ khi chắc chắn dữ liệu Vault cũ không còn mới chuyển file key đi chỗ khác bằng tay |
 | Job sync báo `permission denied` hoặc `... not authorized` khi login | Sai role, namespace hoặc audience, hoặc thiếu ClusterRoleBinding `vault-<market>-tokenreview`; so với bảng mục 5.7; xem `kubectl -n vault-vn logs vault-0` |
 | Job sync báo `keys/types differ from the 8-key contract` | Secret Vault thiếu/thừa key hoặc sai kiểu; sửa theo bảng mục 5.2 |
 | Job sync báo `managed by a Parameter Provider` | Context do provider quản lý; không trộn hai cơ chế (mục 13) |

@@ -99,3 +99,5 @@ cd ~/github/nifi-multi-market-lab
 python3 k8s/scripts/vault-init.py --unseal-only   # Vault luôn sealed sau khi pod restart
 python3 k8s/scripts/check-k8s.py
 ```
+
+Gỡ toàn bộ và dựng lại từ đầu (xóa mọi dữ liệu lab, hỏi xác nhận): `bash k8s/scripts/down.sh` rồi `bash k8s/scripts/up.sh`. Chi tiết ở mục 3.8 của [GUIDE_K8S_VI.md](GUIDE_K8S_VI.md).
